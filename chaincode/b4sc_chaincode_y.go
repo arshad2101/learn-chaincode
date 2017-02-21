@@ -1,8 +1,10 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
+	"strconv"
 
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
@@ -12,7 +14,7 @@ type SampleChaincode struct {
 
 //custom data models
 type WayBill struct {
-	ID               string `json:"id"`
+	WayBillID        string `json:"id"`
 	AssetType        string `json:"assetType"`
 	LastModifiedDate string `json:"lastModifiedDate"`
 	Quantity         int    `json:"quantity"`
@@ -37,7 +39,18 @@ func GetWayBill(stub shim.ChaincodeStubInterface, args []string) ([]byte, error)
 	}
 
 	var wayBillId = args[0]
+
 	bytes, err := stub.GetState(wayBillId)
+
+	wayBillStruct := WayBill{}
+
+	json.Unmarshal(bytes, &wayBillStruct)
+
+	fmt.Println("WayBillID ", wayBillStruct.WayBillID)
+	fmt.Println("AssetType ", wayBillStruct.AssetType)
+	fmt.Println("LastModifiedDate ", wayBillStruct.LastModifiedDate)
+	fmt.Println("Quantity ", wayBillStruct.Quantity)
+
 	if err != nil {
 		fmt.Println("Could not fetch loan way bill with id "+wayBillId+" from ledger", err)
 		return nil, err
@@ -70,10 +83,22 @@ func CreateWayBill(stub shim.ChaincodeStubInterface, args []string) ([]byte, err
 		return nil, errors.New("Expected atleast two arguments for way bill creation")
 	}
 
-	var wayBillId = args[0]
-	var wayBillInput = args[1]
+	//var wayBillId = args[0]
+	//var wayBillInput = args[1]
 
-	err := stub.PutState(wayBillId, []byte(wayBillInput))
+	var wayBillID = args[0]
+	var assetType = args[1]
+	var lastModifiedDate = args[2]
+	var quantity, _ = strconv.Atoi(args[3])
+	wayBillStruct := WayBill{
+		WayBillID:        wayBillID,
+		AssetType:        assetType,
+		LastModifiedDate: lastModifiedDate,
+		Quantity:         quantity,
+	}
+	bytes, _ := json.Marshal(wayBillStruct)
+
+	err := stub.PutState(wayBillID, bytes)
 	if err != nil {
 		fmt.Println("Could not save way bill to ledger", err)
 		return nil, err
