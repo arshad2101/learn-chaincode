@@ -619,9 +619,9 @@ func (t *B4SCChaincode) Query(stub shim.ChaincodeStubInterface, function string,
 		return Inbox(stub, args)
 	} else if function == "DumpData" {
 		return DumpData(stub, args)
-	} else if function == "ViewWayill"
-	return ViewWayill(stub, args)
-	else {
+	} else if function == "ViewWayill" {
+		return ViewWayill(stub, args)
+	} else {
 		return nil, errors.New("Invalid function name " + function)
 	}
 }
