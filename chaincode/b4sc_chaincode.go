@@ -397,6 +397,25 @@ func ViewShipment(stub shim.ChaincodeStubInterface, args []string) ([]byte, erro
 	return nil, dataerr
 
 }
+func ViewWayill(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	fmt.Println("Entering ViewWayBill " + args[0])
+
+	WayBillId := args[0]
+	//request := parseViewShipmentRequest(args[0])
+
+	shipmentData, dataerr := fetchShipmentData(stub, WayBillId)
+	if dataerr == nil {
+		if hasPermission(shipmentData.Acl, request.CallingEntityName) {
+			dataToStore, _ := json.Marshal(shipmentData)
+			return []byte(dataToStore), nil
+		} else {
+			return []byte("{ \"errMsg\": \"No data found\" }"), nil
+		}
+	}
+
+	return nil, dataerr
+
+}
 
 func parseViewShipmentRequest(jsondata string) ViewShipmentRequest {
 	res := ViewShipmentRequest{}
@@ -454,21 +473,21 @@ func hasPermission(acl []string, currUser string) bool {
 	return false
 }
 
-func fetchShipmentData(stub shim.ChaincodeStubInterface, shipmentNumber string) (Shipment, error) {
-	var shipmentData Shipment
+func fetchShipmentData(stub shim.ChaincodeStubInterface, WayBillId string) (Shipment, error) {
+	var wayBill WayBill
 
 	indexByte, err := stub.GetState(shipmentNumber)
 	if err != nil {
-		fmt.Println("Could not retrive Shipment Index", err)
-		return shipmentData, err
+		fmt.Println("Could not retrive WayBill ", err)
+		return wayBill, err
 	}
 
-	if marshErr := json.Unmarshal(indexByte, &shipmentData); marshErr != nil {
-		fmt.Println("Could not save Shipment to ledger", marshErr)
-		return shipmentData, marshErr
+	if marshErr := json.Unmarshal(indexByte, &wayBill); marshErr != nil {
+		fmt.Println("Could not retrieve WayBill from ledger", marshErr)
+		return wayBill, marshErr
 	}
 
-	return shipmentData, nil
+	return wayBill, nil
 
 }
 
