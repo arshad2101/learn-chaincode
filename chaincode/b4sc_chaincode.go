@@ -397,16 +397,16 @@ func ViewShipment(stub shim.ChaincodeStubInterface, args []string) ([]byte, erro
 	return nil, dataerr
 
 }
-func ViewWayill(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+func ViewWayBill(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	fmt.Println("Entering ViewWayBill " + args[0])
 
 	WayBillId := args[0]
 	//request := parseViewShipmentRequest(args[0])
 
-	shipmentData, dataerr := fetchShipmentData(stub, WayBillId)
+	waybilldata, dataerr := fetchWayBillData(stub, WayBillId)
 	if dataerr == nil {
 
-		dataToStore, _ := json.Marshal(shipmentData)
+		dataToStore, _ := json.Marshal(waybilldata)
 		return []byte(dataToStore), nil
 
 	}
@@ -619,8 +619,8 @@ func (t *B4SCChaincode) Query(stub shim.ChaincodeStubInterface, function string,
 		return Inbox(stub, args)
 	} else if function == "DumpData" {
 		return DumpData(stub, args)
-	} else if function == "ViewWayill" {
-		return ViewWayill(stub, args)
+	} else if function == "ViewWayBill" {
+		return ViewWayBill(stub, args)
 	} else {
 		return nil, errors.New("Invalid function name " + function)
 	}
