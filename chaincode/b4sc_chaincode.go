@@ -40,9 +40,9 @@ type WayBill struct {
 	ConsigneeRegNo   string
 	LastModifiedDate string
 	Quantity         int
-	Assets           []Asset
-	Cartons          []Carton
-	Pallets          []Pallet
+	Assets           []string
+	Cartons          []string
+	Pallets          []string
 }
 
 type CreateWayBillRequest struct {
@@ -54,9 +54,9 @@ type CreateWayBillRequest struct {
 	ConsigneeRegNo   string
 	LastModifiedDate string
 	Quantity         int
-	Assets           []Asset
-	Cartons          []Carton
-	Pallets          []Pallet
+	Assets           []string
+	Cartons          []string
+	Pallets          []string
 }
 
 type CreateWayBillResponse struct {
@@ -82,31 +82,9 @@ type MWayBill struct {
 	ConsignerNotes   string
 	CreatedBy        string
 	PendingWith      string
-	Pallets          []Pallet
-	Cartons          []Carton
-	Assets           []Asset
-}
-
-type createMWayBillRequest struct {
-	MWayBillId       string
-	CreatedDate      string
-	LastModifiedDate string
-	Status           string
-	ConsignerAddress string
-	Consignee        string
-	ConsigneeAddress string
-	ConsigneeRegNo   string
-	ModelNo          string
-	VehicleNumber    string
-	VehicleType      string
-	PickUpTime       string
-	ValuesOfGood     string
-	ConsignerNotes   string
-	CreatedBy        string
-	PendingWith      string
-	Pallets          []Pallet
-	Cartons          []Carton
-	Assets           []Asset
+	Pallets          []string
+	Cartons          []string
+	Assets           []string
 }
 
 type CreateMWayBillRequest struct {
@@ -126,9 +104,9 @@ type CreateMWayBillRequest struct {
 	ConsignerNotes   string
 	CreatedBy        string
 	PendingWith      string
-	Pallets          []Pallet
-	Cartons          []Carton
-	Assets           []Asset
+	Pallets          []string
+	Cartons          []string
+	Assets           []string
 }
 type CreateMWayBillResponse struct {
 	Err     string `json:"err"`
@@ -152,10 +130,10 @@ type MMWayBill struct {
 	CreatedBy            string
 	PendingWith          string
 	Conatiner            string
-	MWayBills            []MWayBill
-	Pallets              []Pallet
-	Cartons              []Carton
-	Assets               []Asset
+	MWayBills            []string
+	Pallets              []string
+	Cartons              []string
+	Assets               []string
 }
 type WayBillHistory struct {
 	name      string
