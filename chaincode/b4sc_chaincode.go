@@ -465,7 +465,7 @@ func processMMWayBill(stub shim.ChaincodeStubInterface, createMMWayBillRequest C
 
 	resp := CreateMMWayBillResponse{}
 	resp.Err = "000"
-	resp.Message = mWayBill.MMWayBillId
+	resp.Message = mmWayBill.MMWayBillId
 
 	respString, _ := json.Marshal(resp)
 
