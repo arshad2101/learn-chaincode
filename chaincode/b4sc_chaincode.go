@@ -265,6 +265,18 @@ type CreateShipmentResponse struct {
 	Message string `json:"message"`
 }
 
+func BatchCreateUpdateAssets(assetIds []string) {
+	fmt.Println("This is dummy method to Batch Insert/Update the Assets")
+}
+
+func BatchCreateUpdatePallets(assetIds []string) {
+	fmt.Println("This is dummy method to Batch Insert/Update the Pallets")
+}
+
+func BatchCreateUpdateCartons(assetIds []string) {
+	fmt.Println("This is dummy method to Batch Insert/Update the Cartons")
+}
+
 func CreateWayBill(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	fmt.Println("Entering Master Master WayBill")
 
@@ -454,6 +466,10 @@ func processMMWayBill(stub shim.ChaincodeStubInterface, createMMWayBillRequest C
 	mmWayBill.Pallets = createMMWayBillRequest.Pallets
 	mmWayBill.Cartons = createMMWayBillRequest.Cartons
 	mmWayBill.Assets = createMMWayBillRequest.Assets
+
+	BatchCreateUpdateAssets(mmWayBill.Assets)
+	BatchCreateUpdatePallets(mmWayBill.Pallets)
+	BatchCreateUpdateCartons(mmWayBill.Cartons)
 
 	dataToStore, _ := json.Marshal(mmWayBill)
 
@@ -833,7 +849,7 @@ func (t *B4SCChaincode) Invoke(stub shim.ChaincodeStubInterface, function string
 		return CreateWayBill(stub, args)
 	} else if function == "CreateMWayBill" {
 		return CreateMWayBill(stub, args)
-	} else if function == "CreateMWayBill" {
+	} else if function == "CreateMMWayBill" {
 		return CreateMMWayBill(stub, args)
 	} else {
 		return nil, errors.New("Invalid function name " + function)
