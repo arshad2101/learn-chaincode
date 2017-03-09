@@ -4,8 +4,19 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
+	"io/ioutil"
+	"log"
+	"os"
 
 	"github.com/hyperledger/fabric/core/chaincode/shim"
+)
+
+var (
+	Trace   *log.Logger
+	Info    *log.Logger
+	Warning *log.Logger
+	Error   *log.Logger
 )
 
 type B4SCChaincode struct {
@@ -266,15 +277,16 @@ type CreateShipmentResponse struct {
 }
 
 func BatchCreateUpdateAssets(assetIds []string) {
-	fmt.Println("This is dummy method to Batch Insert/Update the Assets")
+	Info.Println("This is dummy method to Batch Insert/Update the Assets")
+
 }
 
 func BatchCreateUpdatePallets(assetIds []string) {
-	fmt.Println("This is dummy method to Batch Insert/Update the Pallets")
+	Info.Println("This is dummy method to Batch Insert/Update the Pallets")
 }
 
 func BatchCreateUpdateCartons(assetIds []string) {
-	fmt.Println("This is dummy method to Batch Insert/Update the Cartons")
+	Info.Println("This is dummy method to Batch Insert/Update the Cartons")
 }
 
 func CreateWayBill(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
@@ -820,6 +832,29 @@ func DumpData(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 
 /************** DumpData Ends ************************/
 
+func Init(
+	traceHandle io.Writer,
+	infoHandle io.Writer,
+	warningHandle io.Writer,
+	errorHandle io.Writer) {
+
+	Trace = log.New(traceHandle,
+		"TRACE: ",
+		log.Ldate|log.Ltime|log.Lshortfile)
+
+	Info = log.New(infoHandle,
+		"INFO: ",
+		log.Ldate|log.Ltime|log.Lshortfile)
+
+	Warning = log.New(warningHandle,
+		"WARNING: ",
+		log.Ldate|log.Ltime|log.Lshortfile)
+
+	Error = log.New(errorHandle,
+		"ERROR: ",
+		log.Ldate|log.Ltime|log.Lshortfile)
+}
+
 // Init resets all the things
 func (t *B4SCChaincode) Init(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 	fmt.Println("Inside INIT for test chaincode")
@@ -879,6 +914,8 @@ func (t *B4SCChaincode) Query(stub shim.ChaincodeStubInterface, function string,
 }
 
 func main() {
+	Init(ioutil.Discard, os.Stdout, os.Stdout, os.Stderr)
+
 	err := shim.Start(new(B4SCChaincode))
 	if err != nil {
 		fmt.Println("Could not start B4SCChaincode")
