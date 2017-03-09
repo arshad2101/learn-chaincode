@@ -595,7 +595,7 @@ func ViewMMWayBill(stub shim.ChaincodeStubInterface, args []string) ([]byte, err
 
 	mmWayBillId := args[0]
 
-	mmWaybilldata, dataerr := fetchMWayBillData(stub, mmWayBillId)
+	mmWaybilldata, dataerr := fetchMMWayBillData(stub, mmWayBillId)
 	if dataerr == nil {
 
 		dataToStore, _ := json.Marshal(mmWaybilldata)
@@ -713,6 +713,24 @@ func fetchMWayBillData(stub shim.ChaincodeStubInterface, mWayBillId string) (MWa
 	}
 
 	return mWayBill, nil
+
+}
+
+func fetchMMWayBillData(stub shim.ChaincodeStubInterface, mmWayBillId string) (MMWayBill, error) {
+	var mmWayBill MMWayBill
+
+	indexByte, err := stub.GetState(mmWayBillId)
+	if err != nil {
+		fmt.Println("Could not retrive MMWayBill ", err)
+		return mmWayBill, err
+	}
+
+	if marshErr := json.Unmarshal(indexByte, &mmWayBill); marshErr != nil {
+		fmt.Println("Could not retrieve Master Master WayBill from ledger", marshErr)
+		return mmWayBill, marshErr
+	}
+
+	return mmWayBill, nil
 
 }
 
