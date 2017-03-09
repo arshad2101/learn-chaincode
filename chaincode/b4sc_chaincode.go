@@ -40,9 +40,9 @@ type WayBill struct {
 	ConsigneeRegNo   string
 	LastModifiedDate string
 	Quantity         int
-	Assets           []Asset
-	Cartons          []Carton
-	Pallets          []Pallet
+	Assets           []string
+	Cartons          []string
+	Pallets          []string
 }
 
 type CreateWayBillRequest struct {
@@ -54,9 +54,9 @@ type CreateWayBillRequest struct {
 	ConsigneeRegNo   string
 	LastModifiedDate string
 	Quantity         int
-	Assets           []Asset
-	Cartons          []Carton
-	Pallets          []Pallet
+	Assets           []string
+	Cartons          []string
+	Pallets          []string
 }
 
 type CreateWayBillResponse struct {
@@ -82,31 +82,9 @@ type MWayBill struct {
 	ConsignerNotes   string
 	CreatedBy        string
 	PendingWith      string
-	Pallets          []Pallet
-	Cartons          []Carton
-	Assets           []Asset
-}
-
-type createMWayBillRequest struct {
-	MWayBillId       string
-	CreatedDate      string
-	LastModifiedDate string
-	Status           string
-	ConsignerAddress string
-	Consignee        string
-	ConsigneeAddress string
-	ConsigneeRegNo   string
-	ModelNo          string
-	VehicleNumber    string
-	VehicleType      string
-	PickUpTime       string
-	ValuesOfGood     string
-	ConsignerNotes   string
-	CreatedBy        string
-	PendingWith      string
-	Pallets          []Pallet
-	Cartons          []Carton
-	Assets           []Asset
+	Pallets          []string
+	Cartons          []string
+	Assets           []string
 }
 
 type CreateMWayBillRequest struct {
@@ -126,9 +104,9 @@ type CreateMWayBillRequest struct {
 	ConsignerNotes   string
 	CreatedBy        string
 	PendingWith      string
-	Pallets          []Pallet
-	Cartons          []Carton
-	Assets           []Asset
+	Pallets          []string
+	Cartons          []string
+	Assets           []string
 }
 type CreateMWayBillResponse struct {
 	Err     string `json:"err"`
@@ -152,11 +130,40 @@ type MMWayBill struct {
 	CreatedBy            string
 	PendingWith          string
 	Conatiner            string
-	MWayBills            []MWayBill
-	Pallets              []Pallet
-	Cartons              []Carton
-	Assets               []Asset
+	MWayBills            []string
+	Pallets              []string
+	Cartons              []string
+	Assets               []string
 }
+
+type CreateMMWayBillRequest struct {
+	MMWayBillId          string
+	CreatedDate          string
+	LastModifiedDate     string
+	Status               string
+	ConatinerNo          string
+	ConsignerAddress     string
+	Consignee            string
+	ConsigneeAddress     string
+	ConsigneeRegNo       string
+	PersonConsigning     string
+	VehicleId            string
+	ExportWarehouseNotes string
+	CreatedBy            string
+	PendingWith          string
+	Conatiner            string
+	MWayBills            []string
+	Pallets              []string
+	Cartons              []string
+	Assets               []string
+}
+
+type CreateMMWayBillResponse struct {
+	Err     string `json:"err"`
+	ErrMsg  string `json:"errMsg"`
+	Message string `json:"message"`
+}
+
 type WayBillHistory struct {
 	name      string
 	address   string
@@ -279,9 +286,9 @@ func CreateMWayBill(stub shim.ChaincodeStubInterface, args []string) ([]byte, er
 func CreateMMWayBill(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	fmt.Println("Entering Master Master WayBill")
 
-	shipmentRequest := parseCreateShipmentRequest(args[0])
+	mmWayBillRequest := parseMMWayBillRequest(args[0])
 
-	return processShipment(stub, shipmentRequest)
+	return processMMWayBill(stub, mmWayBillRequest)
 
 }
 
@@ -425,6 +432,48 @@ func processMWayBill(stub shim.ChaincodeStubInterface, createMWayBillRequest Cre
 
 }
 
+func processMMWayBill(stub shim.ChaincodeStubInterface, createMMWayBillRequest CreateMMWayBillRequest) ([]byte, error) {
+	mmWayBill := MMWayBill{}
+
+	mmWayBill.MMWayBillId = createMMWayBillRequest.MMWayBillId
+	mmWayBill.CreatedDate = createMMWayBillRequest.CreatedDate
+	mmWayBill.LastModifiedDate = createMMWayBillRequest.LastModifiedDate
+	mmWayBill.Status = createMMWayBillRequest.Status
+	mmWayBill.ConatinerNo = createMMWayBillRequest.ConatinerNo
+	mmWayBill.ConsignerAddress = createMMWayBillRequest.ConsignerAddress
+	mmWayBill.Consignee = createMMWayBillRequest.Consignee
+	mmWayBill.ConsigneeAddress = createMMWayBillRequest.ConsigneeAddress
+	mmWayBill.ConsigneeRegNo = createMMWayBillRequest.ConsigneeRegNo
+	mmWayBill.PersonConsigning = createMMWayBillRequest.PersonConsigning
+	mmWayBill.VehicleId = createMMWayBillRequest.VehicleId
+	mmWayBill.ExportWarehouseNotes = createMMWayBillRequest.ExportWarehouseNotes
+	mmWayBill.CreatedBy = createMMWayBillRequest.CreatedBy
+	mmWayBill.PendingWith = createMMWayBillRequest.PendingWith
+	mmWayBill.Conatiner = createMMWayBillRequest.Conatiner
+	mmWayBill.MWayBills = createMMWayBillRequest.MWayBills
+	mmWayBill.Pallets = createMMWayBillRequest.Pallets
+	mmWayBill.Cartons = createMMWayBillRequest.Cartons
+	mmWayBill.Assets = createMMWayBillRequest.Assets
+
+	dataToStore, _ := json.Marshal(mmWayBill)
+
+	err := stub.PutState(mmWayBill.MMWayBillId, []byte(dataToStore))
+	if err != nil {
+		fmt.Println("Could not save Master Master Way Bill to ledger", err)
+		return nil, err
+	}
+
+	resp := CreateMMWayBillResponse{}
+	resp.Err = "000"
+	resp.Message = mmWayBill.MMWayBillId
+
+	respString, _ := json.Marshal(resp)
+
+	fmt.Println("Successfully saved Master Master way bill")
+	return []byte(respString), nil
+
+}
+
 func addShipmentIndex(stub shim.ChaincodeStubInterface, shipmentIndex ShipmentIndex) error {
 	indexByte, err := stub.GetState("SHIPMENT_INDEX")
 	if err != nil {
@@ -471,8 +520,8 @@ func parseMWayBillRequest(jsondata string) CreateMWayBillRequest {
 	return res
 }
 
-func parseMMWayBillRequest(jsondata string) CreateShipmentRequest {
-	res := CreateShipmentRequest{}
+func parseMMWayBillRequest(jsondata string) CreateMMWayBillRequest {
+	res := CreateMMWayBillRequest{}
 	json.Unmarshal([]byte(jsondata), &res)
 	fmt.Println(res)
 	return res
@@ -541,6 +590,23 @@ func ViewMWayBill(stub shim.ChaincodeStubInterface, args []string) ([]byte, erro
 
 }
 
+func ViewMMWayBill(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	fmt.Println("Entering ViewMMWayBill " + args[0])
+
+	mmWayBillId := args[0]
+	mmWaybilldata, dataerr := fetchMMWayBillData(stub, mmWayBillId)
+	fmt.Println("MMWayBill Response: ", mmWaybilldata)
+	if dataerr == nil {
+
+		dataToStore, _ := json.Marshal(mmWaybilldata)
+		//fmt.Println("MMWayBill Unmarshalled: " + dataToStore)
+		return []byte(dataToStore), nil
+
+	}
+
+	return nil, dataerr
+
+}
 func parseViewShipmentRequest(jsondata string) ViewShipmentRequest {
 	res := ViewShipmentRequest{}
 	json.Unmarshal([]byte(jsondata), &res)
@@ -651,6 +717,24 @@ func fetchMWayBillData(stub shim.ChaincodeStubInterface, mWayBillId string) (MWa
 
 }
 
+func fetchMMWayBillData(stub shim.ChaincodeStubInterface, mmWayBillId string) (MMWayBill, error) {
+	var mmWayBill MMWayBill
+	fmt.Println("MMWayBillID: " + mmWayBillId)
+	indexByte, err := stub.GetState(mmWayBillId)
+	if err != nil {
+		fmt.Println("Could not retrive MMWayBill ", err)
+		return mmWayBill, err
+	}
+
+	if marshErr := json.Unmarshal(indexByte, &mmWayBill); marshErr != nil {
+		fmt.Println("Could not retrieve Master Master WayBill from ledger", marshErr)
+		return mmWayBill, marshErr
+	}
+
+	return mmWayBill, nil
+
+}
+
 func fetchShipmentIndex(stub shim.ChaincodeStubInterface, callingEntityName string, status string) ([]byte, error) {
 	allShipmentIndex := AllShipment{}
 	var shipmentIndexArr []ShipmentIndex
@@ -749,6 +833,8 @@ func (t *B4SCChaincode) Invoke(stub shim.ChaincodeStubInterface, function string
 		return CreateWayBill(stub, args)
 	} else if function == "CreateMWayBill" {
 		return CreateMWayBill(stub, args)
+	} else if function == "CreateMWayBill" {
+		return CreateMMWayBill(stub, args)
 	} else {
 		return nil, errors.New("Invalid function name " + function)
 	}
@@ -769,6 +855,8 @@ func (t *B4SCChaincode) Query(stub shim.ChaincodeStubInterface, function string,
 		return ViewWayBill(stub, args)
 	} else if function == "ViewMWayBill" {
 		return ViewMWayBill(stub, args)
+	} else if function == "ViewMMWayBill" {
+		return ViewMMWayBill(stub, args)
 	} else {
 		return nil, errors.New("Invalid function name " + function)
 	}
