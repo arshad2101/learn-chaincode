@@ -29,17 +29,37 @@ type Pallet struct {
 	Modeltype string
 	CartonId  []string
 	WayBill   []string
+	//Added by Arshad
+	ContainerId string
+	VesselId    string
+	WayBillId   string
+	MWayBillId  string
+	MMWayBillId string
 }
 
 type Carton struct {
 	CartonId string
 	AssetId  []string
+	//Added by Arshad
+	PalletId    string
+	ContainerId string
+	VesselId    string
+	WayBillId   string
+	MWayBillId  string
+	MMWayBillId string
 }
 
 type Asset struct {
-	AssetId   string
-	Modeltype string
-	color     string
+	AssetId     string
+	Modeltype   string
+	color       string
+	CartonId    string
+	PalletId    string
+	ContainerId string
+	VesselId    string
+	WayBillId   string
+	MWayBillId  string
+	MMWayBillId string
 }
 
 type WayBill struct {
@@ -229,6 +249,35 @@ type AllShipment struct {
 	ShipmentIndexArr []ShipmentIndex
 }
 
+func GetAsset(assetsId string) Asset {
+	Info.Println("This is dummy method to Get the Asset")
+	return Asset{}
+
+}
+func GetPallet(palletId string) Pallet {
+	Info.Println("This is dummy method to Get the Pallet")
+	return Pallet{}
+
+}
+func GetCarton(cartonId string) Carton {
+	Info.Println("This is dummy method to Get the Carton")
+	return Carton{}
+
+}
+
+func CreateUpdateAsset(asset Asset) {
+	Info.Println("This is dummy method to Batch Insert/Update the Asset")
+
+}
+
+func CreateUpdatePallet(pallet Pallet) {
+	Info.Println("This is dummy method to Batch Insert/Update the Pallet")
+}
+
+func CreateUpdateCarton(carton Carton) {
+	Info.Println("This is dummy method to Batch Insert/Update the Carton")
+}
+
 /************** Create Shipment Starts ************************/
 /**
 	Expected Input is
@@ -276,46 +325,6 @@ type CreateShipmentResponse struct {
 	Message string `json:"message"`
 }
 
-func BatchCreateUpdateAssets(assetIds []string) {
-	Info.Println("This is dummy method to Batch Insert/Update the Assets")
-
-}
-
-func BatchCreateUpdatePallets(assetIds []string) {
-	Info.Println("This is dummy method to Batch Insert/Update the Pallets")
-}
-
-func BatchCreateUpdateCartons(assetIds []string) {
-	Info.Println("This is dummy method to Batch Insert/Update the Cartons")
-}
-
-func CreateWayBill(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
-	fmt.Println("Entering Master Master WayBill")
-
-	wayBillRequest := parseWayBillRequest(args[0])
-
-	return processWayBill(stub, wayBillRequest)
-
-}
-
-func CreateMWayBill(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
-	fmt.Println("Entering Master Master WayBill")
-
-	mWayBillRequest := parseMWayBillRequest(args[0])
-
-	return processMWayBill(stub, mWayBillRequest)
-
-}
-
-func CreateMMWayBill(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
-	fmt.Println("Entering Master Master WayBill")
-
-	mmWayBillRequest := parseMMWayBillRequest(args[0])
-
-	return processMMWayBill(stub, mmWayBillRequest)
-
-}
-
 func CreateShipment(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	fmt.Println("Entering CreateShipment")
 
@@ -324,7 +333,6 @@ func CreateShipment(stub shim.ChaincodeStubInterface, args []string) ([]byte, er
 	return processShipment(stub, shipmentRequest)
 
 }
-
 func processShipment(stub shim.ChaincodeStubInterface, shipmentRequest CreateShipmentRequest) ([]byte, error) {
 	shipment := Shipment{}
 	shipmentIndex := ShipmentIndex{}
@@ -380,7 +388,108 @@ func processShipment(stub shim.ChaincodeStubInterface, shipmentRequest CreateShi
 	return []byte(respString), nil
 
 }
+func addShipmentIndex(stub shim.ChaincodeStubInterface, shipmentIndex ShipmentIndex) error {
+	indexByte, err := stub.GetState("SHIPMENT_INDEX")
+	if err != nil {
+		fmt.Println("Could not retrive Shipment Index", err)
+		return err
+	}
+	allShipmentIndex := AllShipment{}
 
+	if marshErr := json.Unmarshal(indexByte, &allShipmentIndex); marshErr != nil {
+		fmt.Println("Could not save Shipment to ledger", marshErr)
+		return marshErr
+	}
+
+	allShipmentIndex.ShipmentIndexArr = append(allShipmentIndex.ShipmentIndexArr, shipmentIndex)
+	dataToStore, _ := json.Marshal(allShipmentIndex)
+
+	addErr := stub.PutState("SHIPMENT_INDEX", []byte(dataToStore))
+	if addErr != nil {
+		fmt.Println("Could not save Shipment to ledger", addErr)
+		return addErr
+	}
+
+	return nil
+}
+
+func parseCreateShipmentRequest(jsondata string) CreateShipmentRequest {
+	res := CreateShipmentRequest{}
+	json.Unmarshal([]byte(jsondata), &res)
+	fmt.Println(res)
+	return res
+}
+
+/************** Create Shipment Ends ************************/
+
+/************** View Shipment Starts ************************/
+
+type ViewShipmentRequest struct {
+	CallingEntityName string `json:"callingEntityName"`
+	ShipmentNumber    string `json:"shipmentNumber"`
+}
+
+func ViewShipment(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	fmt.Println("Entering ViewShipment " + args[0])
+
+	request := parseViewShipmentRequest(args[0])
+
+	shipmentData, dataerr := fetchShipmentData(stub, request.ShipmentNumber)
+	if dataerr == nil {
+		if hasPermission(shipmentData.Acl, request.CallingEntityName) {
+			dataToStore, _ := json.Marshal(shipmentData)
+			return []byte(dataToStore), nil
+		} else {
+			return []byte("{ \"errMsg\": \"No data found\" }"), nil
+		}
+	}
+
+	return nil, dataerr
+
+}
+
+func parseViewShipmentRequest(jsondata string) ViewShipmentRequest {
+	res := ViewShipmentRequest{}
+	json.Unmarshal([]byte(jsondata), &res)
+	fmt.Println(res)
+	return res
+}
+func fetchShipmentData(stub shim.ChaincodeStubInterface, shipmentNumber string) (Shipment, error) {
+	var shipmentData Shipment
+
+	indexByte, err := stub.GetState(shipmentNumber)
+	if err != nil {
+		fmt.Println("Could not retrive Shipment Index", err)
+		return shipmentData, err
+	}
+
+	if marshErr := json.Unmarshal(indexByte, &shipmentData); marshErr != nil {
+		fmt.Println("Could not save Shipment to ledger", marshErr)
+		return shipmentData, marshErr
+	}
+
+	return shipmentData, nil
+
+}
+
+/************** View Shipment Ends ************************/
+
+/************** Create WayBill Starts ************************/
+
+func CreateWayBill(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	fmt.Println("Entering Master Master WayBill")
+
+	wayBillRequest := parseWayBillRequest(args[0])
+
+	return processWayBill(stub, wayBillRequest)
+
+}
+func parseWayBillRequest(jsondata string) CreateWayBillRequest {
+	res := CreateWayBillRequest{}
+	json.Unmarshal([]byte(jsondata), &res)
+	fmt.Println(res)
+	return res
+}
 func processWayBill(stub shim.ChaincodeStubInterface, createWayBillRequest CreateWayBillRequest) ([]byte, error) {
 	wayBill := WayBill{}
 	//	shipmentIndex := ShipmentIndex{}
@@ -415,6 +524,62 @@ func processWayBill(stub shim.ChaincodeStubInterface, createWayBillRequest Creat
 
 }
 
+/************** Create WayBill Ends ************************/
+
+/************** View WayBill Starts ************************/
+
+func ViewWayBill(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	fmt.Println("Entering ViewWayBill " + args[0])
+
+	WayBillId := args[0]
+
+	waybilldata, dataerr := fetchWayBillData(stub, WayBillId)
+	if dataerr == nil {
+
+		dataToStore, _ := json.Marshal(waybilldata)
+		return []byte(dataToStore), nil
+
+	}
+
+	return nil, dataerr
+
+}
+func fetchWayBillData(stub shim.ChaincodeStubInterface, WayBillId string) (WayBill, error) {
+	var wayBill WayBill
+
+	indexByte, err := stub.GetState(WayBillId)
+	if err != nil {
+		fmt.Println("Could not retrive WayBill ", err)
+		return wayBill, err
+	}
+
+	if marshErr := json.Unmarshal(indexByte, &wayBill); marshErr != nil {
+		fmt.Println("Could not retrieve WayBill from ledger", marshErr)
+		return wayBill, marshErr
+	}
+
+	return wayBill, nil
+
+}
+
+/************** View WayBill Ends ************************/
+
+/************** Create Master WayBill Starts ************************/
+
+func CreateMWayBill(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	fmt.Println("Entering Master Master WayBill")
+
+	mWayBillRequest := parseMWayBillRequest(args[0])
+
+	return processMWayBill(stub, mWayBillRequest)
+
+}
+func parseMWayBillRequest(jsondata string) CreateMWayBillRequest {
+	res := CreateMWayBillRequest{}
+	json.Unmarshal([]byte(jsondata), &res)
+	fmt.Println(res)
+	return res
+}
 func processMWayBill(stub shim.ChaincodeStubInterface, createMWayBillRequest CreateMWayBillRequest) ([]byte, error) {
 	mWayBill := MWayBill{}
 	//	shipmentIndex := ShipmentIndex{}
@@ -456,6 +621,62 @@ func processMWayBill(stub shim.ChaincodeStubInterface, createMWayBillRequest Cre
 
 }
 
+/************** Create Master WayBill Ends ************************/
+
+/************** View Master WayBill Starts ************************/
+
+func ViewMWayBill(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	fmt.Println("Entering ViewMWayBill " + args[0])
+
+	mWayBillId := args[0]
+
+	mWaybilldata, dataerr := fetchMWayBillData(stub, mWayBillId)
+	if dataerr == nil {
+
+		dataToStore, _ := json.Marshal(mWaybilldata)
+		return []byte(dataToStore), nil
+
+	}
+
+	return nil, dataerr
+
+}
+func fetchMWayBillData(stub shim.ChaincodeStubInterface, mWayBillId string) (MWayBill, error) {
+	var mWayBill MWayBill
+
+	indexByte, err := stub.GetState(mWayBillId)
+	if err != nil {
+		fmt.Println("Could not retrive MWayBill ", err)
+		return mWayBill, err
+	}
+
+	if marshErr := json.Unmarshal(indexByte, &mWayBill); marshErr != nil {
+		fmt.Println("Could not retrieve master WayBill from ledger", marshErr)
+		return mWayBill, marshErr
+	}
+
+	return mWayBill, nil
+
+}
+
+/************** View Master WayBill Ends ************************/
+
+/************** Create Master Master WayBill Starts ************************/
+
+func CreateMMWayBill(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	fmt.Println("Entering Master Master WayBill")
+
+	mmWayBillRequest := parseMMWayBillRequest(args[0])
+
+	return processMMWayBill(stub, mmWayBillRequest)
+
+}
+func parseMMWayBillRequest(jsondata string) CreateMMWayBillRequest {
+	res := CreateMMWayBillRequest{}
+	json.Unmarshal([]byte(jsondata), &res)
+	fmt.Println(res)
+	return res
+}
 func processMMWayBill(stub shim.ChaincodeStubInterface, createMMWayBillRequest CreateMMWayBillRequest) ([]byte, error) {
 	mmWayBill := MMWayBill{}
 
@@ -479,10 +700,58 @@ func processMMWayBill(stub shim.ChaincodeStubInterface, createMMWayBillRequest C
 	mmWayBill.Cartons = createMMWayBillRequest.Cartons
 	mmWayBill.Assets = createMMWayBillRequest.Assets
 
-	BatchCreateUpdateAssets(mmWayBill.Assets)
-	BatchCreateUpdatePallets(mmWayBill.Pallets)
-	BatchCreateUpdateCartons(mmWayBill.Cartons)
+	//Update all the assets present in MMWayBill
+	for index, assetId := range mmWayBill.Assets {
+		fmt.Println(index)
+		asset := GetAsset(assetId)
+		updatedAsset := Asset{}
+		updatedAsset.AssetId = asset.AssetId
+		updatedAsset.Modeltype = asset.Modeltype
+		updatedAsset.color = asset.color
+		//updatedAsset.CartonId = asset.	Need to Discuss over this
+		//updatedAsset.PalletId = asset. Need to Discuss over this
+		updatedAsset.ContainerId = mmWayBill.Conatiner
+		//updatedAsset.VesselId = asset. Need to Discuss over this
+		//updatedAsset.WayBillId = asset.	 Need to Discuss over this
+		//updatedAsset.MWayBillId = asset.   Need to Discuss over this
+		updatedAsset.MMWayBillId = mmWayBill.MMWayBillId
 
+		CreateUpdateAsset(updatedAsset)
+	}
+	//Update all the cartons present in MMWayBill
+
+	for index, cartonId := range mmWayBill.Cartons {
+		fmt.Println(index)
+		carton := GetCarton(cartonId)
+		updatedCarton := Carton{}
+		updatedCarton.CartonId = carton.CartonId
+		updatedCarton.AssetId = carton.AssetId
+		updatedCarton.PalletId = carton.PalletId
+		updatedCarton.ContainerId = carton.CartonId
+		//updatedCarton.CartonId = mmWayBill.		 Need to Discuss over this
+		//updatedCarton.VesselId = mmWayBill.		Need to Discuss over this
+		//updatedCarton.WayBillId = mmWayBill. 	Need to Discuss over this
+		//updatedCarton.MWayBillId = mmWayBill.	 Need to Discuss over this
+		updatedCarton.MMWayBillId = mmWayBill.MMWayBillId
+		CreateUpdateCarton(updatedCarton)
+	}
+
+	//Update all the assets present in MMWayBill
+	for index, palletId := range mmWayBill.Pallets {
+		fmt.Println(index)
+		pallet := GetPallet(palletId)
+		updatedPallet := Pallet{}
+		updatedPallet.PalletId = pallet.PalletId
+		updatedPallet.Modeltype = pallet.Modeltype
+		updatedPallet.WayBill = pallet.WayBill
+		//updatedPallet.ContainerId = mmWayBill.	 Need to Discuss over this
+		//updatedPallet.VesselId = mmWayBill.   Need to Discuss over this
+		//updatedPallet.WayBillId = mmWayBill.	 Need to Discuss over this
+		//updatedPallet.MWayBillId = mmWayBill.	 Need to Discuss over this
+		updatedPallet.MMWayBillId = mmWayBill.MMWayBillId
+
+		CreateUpdatePallet(updatedPallet)
+	}
 	dataToStore, _ := json.Marshal(mmWayBill)
 
 	err := stub.PutState(mmWayBill.MMWayBillId, []byte(dataToStore))
@@ -502,121 +771,9 @@ func processMMWayBill(stub shim.ChaincodeStubInterface, createMMWayBillRequest C
 
 }
 
-func addShipmentIndex(stub shim.ChaincodeStubInterface, shipmentIndex ShipmentIndex) error {
-	indexByte, err := stub.GetState("SHIPMENT_INDEX")
-	if err != nil {
-		fmt.Println("Could not retrive Shipment Index", err)
-		return err
-	}
-	allShipmentIndex := AllShipment{}
+/************** Create Master Master WayBill Ends ************************/
 
-	if marshErr := json.Unmarshal(indexByte, &allShipmentIndex); marshErr != nil {
-		fmt.Println("Could not save Shipment to ledger", marshErr)
-		return marshErr
-	}
-
-	allShipmentIndex.ShipmentIndexArr = append(allShipmentIndex.ShipmentIndexArr, shipmentIndex)
-	dataToStore, _ := json.Marshal(allShipmentIndex)
-
-	addErr := stub.PutState("SHIPMENT_INDEX", []byte(dataToStore))
-	if addErr != nil {
-		fmt.Println("Could not save Shipment to ledger", addErr)
-		return addErr
-	}
-
-	return nil
-}
-
-func parseCreateShipmentRequest(jsondata string) CreateShipmentRequest {
-	res := CreateShipmentRequest{}
-	json.Unmarshal([]byte(jsondata), &res)
-	fmt.Println(res)
-	return res
-}
-
-func parseWayBillRequest(jsondata string) CreateWayBillRequest {
-	res := CreateWayBillRequest{}
-	json.Unmarshal([]byte(jsondata), &res)
-	fmt.Println(res)
-	return res
-}
-
-func parseMWayBillRequest(jsondata string) CreateMWayBillRequest {
-	res := CreateMWayBillRequest{}
-	json.Unmarshal([]byte(jsondata), &res)
-	fmt.Println(res)
-	return res
-}
-
-func parseMMWayBillRequest(jsondata string) CreateMMWayBillRequest {
-	res := CreateMMWayBillRequest{}
-	json.Unmarshal([]byte(jsondata), &res)
-	fmt.Println(res)
-	return res
-}
-
-/************** Create Shipment Ends ************************/
-
-/************** View Shipment Starts ************************/
-
-type ViewShipmentRequest struct {
-	CallingEntityName string `json:"callingEntityName"`
-	ShipmentNumber    string `json:"shipmentNumber"`
-}
-
-func ViewShipment(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
-	fmt.Println("Entering ViewShipment " + args[0])
-
-	request := parseViewShipmentRequest(args[0])
-
-	shipmentData, dataerr := fetchShipmentData(stub, request.ShipmentNumber)
-	if dataerr == nil {
-		if hasPermission(shipmentData.Acl, request.CallingEntityName) {
-			dataToStore, _ := json.Marshal(shipmentData)
-			return []byte(dataToStore), nil
-		} else {
-			return []byte("{ \"errMsg\": \"No data found\" }"), nil
-		}
-	}
-
-	return nil, dataerr
-
-}
-func ViewWayBill(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
-	fmt.Println("Entering ViewWayBill " + args[0])
-
-	WayBillId := args[0]
-	//request := parseViewShipmentRequest(args[0])
-
-	waybilldata, dataerr := fetchWayBillData(stub, WayBillId)
-	if dataerr == nil {
-
-		dataToStore, _ := json.Marshal(waybilldata)
-		return []byte(dataToStore), nil
-
-	}
-
-	return nil, dataerr
-
-}
-
-func ViewMWayBill(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
-	fmt.Println("Entering ViewMWayBill " + args[0])
-
-	mWayBillId := args[0]
-	//request := parseViewShipmentRequest(args[0])
-
-	mWaybilldata, dataerr := fetchMWayBillData(stub, mWayBillId)
-	if dataerr == nil {
-
-		dataToStore, _ := json.Marshal(mWaybilldata)
-		return []byte(dataToStore), nil
-
-	}
-
-	return nil, dataerr
-
-}
+/************** View Master Master WayWayBill Starts ************************/
 
 func ViewMMWayBill(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	fmt.Println("Entering ViewMMWayBill " + args[0])
@@ -635,14 +792,25 @@ func ViewMMWayBill(stub shim.ChaincodeStubInterface, args []string) ([]byte, err
 	return nil, dataerr
 
 }
-func parseViewShipmentRequest(jsondata string) ViewShipmentRequest {
-	res := ViewShipmentRequest{}
-	json.Unmarshal([]byte(jsondata), &res)
-	fmt.Println(res)
-	return res
+func fetchMMWayBillData(stub shim.ChaincodeStubInterface, mmWayBillId string) (MMWayBill, error) {
+	var mmWayBill MMWayBill
+	fmt.Println("MMWayBillID: " + mmWayBillId)
+	indexByte, err := stub.GetState(mmWayBillId)
+	if err != nil {
+		fmt.Println("Could not retrive MMWayBill ", err)
+		return mmWayBill, err
+	}
+
+	if marshErr := json.Unmarshal(indexByte, &mmWayBill); marshErr != nil {
+		fmt.Println("Could not retrieve Master Master WayBill from ledger", marshErr)
+		return mmWayBill, marshErr
+	}
+
+	return mmWayBill, nil
+
 }
 
-/************** View Shipment Ends ************************/
+/************** View Master Master WayBill Ends ************************/
 
 /************** Inbox Service Starts ************************/
 
@@ -689,78 +857,6 @@ func hasPermission(acl []string, currUser string) bool {
 	}
 
 	return false
-}
-
-func fetchShipmentData(stub shim.ChaincodeStubInterface, shipmentNumber string) (Shipment, error) {
-	var shipmentData Shipment
-
-	indexByte, err := stub.GetState(shipmentNumber)
-	if err != nil {
-		fmt.Println("Could not retrive Shipment Index", err)
-		return shipmentData, err
-	}
-
-	if marshErr := json.Unmarshal(indexByte, &shipmentData); marshErr != nil {
-		fmt.Println("Could not save Shipment to ledger", marshErr)
-		return shipmentData, marshErr
-	}
-
-	return shipmentData, nil
-
-}
-
-func fetchWayBillData(stub shim.ChaincodeStubInterface, WayBillId string) (WayBill, error) {
-	var wayBill WayBill
-
-	indexByte, err := stub.GetState(WayBillId)
-	if err != nil {
-		fmt.Println("Could not retrive WayBill ", err)
-		return wayBill, err
-	}
-
-	if marshErr := json.Unmarshal(indexByte, &wayBill); marshErr != nil {
-		fmt.Println("Could not retrieve WayBill from ledger", marshErr)
-		return wayBill, marshErr
-	}
-
-	return wayBill, nil
-
-}
-
-func fetchMWayBillData(stub shim.ChaincodeStubInterface, mWayBillId string) (MWayBill, error) {
-	var mWayBill MWayBill
-
-	indexByte, err := stub.GetState(mWayBillId)
-	if err != nil {
-		fmt.Println("Could not retrive MWayBill ", err)
-		return mWayBill, err
-	}
-
-	if marshErr := json.Unmarshal(indexByte, &mWayBill); marshErr != nil {
-		fmt.Println("Could not retrieve master WayBill from ledger", marshErr)
-		return mWayBill, marshErr
-	}
-
-	return mWayBill, nil
-
-}
-
-func fetchMMWayBillData(stub shim.ChaincodeStubInterface, mmWayBillId string) (MMWayBill, error) {
-	var mmWayBill MMWayBill
-	fmt.Println("MMWayBillID: " + mmWayBillId)
-	indexByte, err := stub.GetState(mmWayBillId)
-	if err != nil {
-		fmt.Println("Could not retrive MMWayBill ", err)
-		return mmWayBill, err
-	}
-
-	if marshErr := json.Unmarshal(indexByte, &mmWayBill); marshErr != nil {
-		fmt.Println("Could not retrieve Master Master WayBill from ledger", marshErr)
-		return mmWayBill, marshErr
-	}
-
-	return mmWayBill, nil
-
 }
 
 func fetchShipmentIndex(stub shim.ChaincodeStubInterface, callingEntityName string, status string) ([]byte, error) {
