@@ -700,58 +700,59 @@ func processMMWayBill(stub shim.ChaincodeStubInterface, createMMWayBillRequest C
 	mmWayBill.Cartons = createMMWayBillRequest.Cartons
 	mmWayBill.Assets = createMMWayBillRequest.Assets
 
-	//Update all the assets present in MMWayBill
-	for index, assetId := range mmWayBill.Assets {
-		fmt.Println(index)
-		asset := GetAsset(assetId)
-		updatedAsset := Asset{}
-		updatedAsset.AssetId = asset.AssetId
-		updatedAsset.Modeltype = asset.Modeltype
-		updatedAsset.color = asset.color
-		//updatedAsset.CartonId = asset.	Need to Discuss over this
-		//updatedAsset.PalletId = asset. Need to Discuss over this
-		updatedAsset.ContainerId = mmWayBill.Conatiner
-		//updatedAsset.VesselId = asset. Need to Discuss over this
-		//updatedAsset.WayBillId = asset.	 Need to Discuss over this
-		//updatedAsset.MWayBillId = asset.   Need to Discuss over this
-		updatedAsset.MMWayBillId = mmWayBill.MMWayBillId
+	//TEMPORAROLY COMMENTED AS METHODS ARE STILL IN PROGRESS
+	/*	//Update all the assets present in MMWayBill
+		for index, assetId := range mmWayBill.Assets {
+			fmt.Println(index)
+			asset := GetAsset(assetId)
+			updatedAsset := Asset{}
+			updatedAsset.AssetId = asset.AssetId
+			updatedAsset.Modeltype = asset.Modeltype
+			updatedAsset.color = asset.color
+			//updatedAsset.CartonId = asset.	Need to Discuss over this
+			//updatedAsset.PalletId = asset. Need to Discuss over this
+			updatedAsset.ContainerId = mmWayBill.Conatiner
+			//updatedAsset.VesselId = asset. Need to Discuss over this
+			//updatedAsset.WayBillId = asset.	 Need to Discuss over this
+			//updatedAsset.MWayBillId = asset.   Need to Discuss over this
+			updatedAsset.MMWayBillId = mmWayBill.MMWayBillId
 
-		CreateUpdateAsset(updatedAsset)
-	}
-	//Update all the cartons present in MMWayBill
+			CreateUpdateAsset(updatedAsset)
+		}
+		//Update all the cartons present in MMWayBill
 
-	for index, cartonId := range mmWayBill.Cartons {
-		fmt.Println(index)
-		carton := GetCarton(cartonId)
-		updatedCarton := Carton{}
-		updatedCarton.CartonId = carton.CartonId
-		updatedCarton.AssetId = carton.AssetId
-		updatedCarton.PalletId = carton.PalletId
-		updatedCarton.ContainerId = carton.CartonId
-		//updatedCarton.CartonId = mmWayBill.		 Need to Discuss over this
-		//updatedCarton.VesselId = mmWayBill.		Need to Discuss over this
-		//updatedCarton.WayBillId = mmWayBill. 	Need to Discuss over this
-		//updatedCarton.MWayBillId = mmWayBill.	 Need to Discuss over this
-		updatedCarton.MMWayBillId = mmWayBill.MMWayBillId
-		CreateUpdateCarton(updatedCarton)
-	}
+		for index, cartonId := range mmWayBill.Cartons {
+			fmt.Println(index)
+			carton := GetCarton(cartonId)
+			updatedCarton := Carton{}
+			updatedCarton.CartonId = carton.CartonId
+			updatedCarton.AssetId = carton.AssetId
+			updatedCarton.PalletId = carton.PalletId
+			updatedCarton.ContainerId = carton.CartonId
+			//updatedCarton.CartonId = mmWayBill.		 Need to Discuss over this
+			//updatedCarton.VesselId = mmWayBill.		Need to Discuss over this
+			//updatedCarton.WayBillId = mmWayBill. 	Need to Discuss over this
+			//updatedCarton.MWayBillId = mmWayBill.	 Need to Discuss over this
+			updatedCarton.MMWayBillId = mmWayBill.MMWayBillId
+			CreateUpdateCarton(updatedCarton)
+		}
 
-	//Update all the assets present in MMWayBill
-	for index, palletId := range mmWayBill.Pallets {
-		fmt.Println(index)
-		pallet := GetPallet(palletId)
-		updatedPallet := Pallet{}
-		updatedPallet.PalletId = pallet.PalletId
-		updatedPallet.Modeltype = pallet.Modeltype
-		updatedPallet.WayBill = pallet.WayBill
-		//updatedPallet.ContainerId = mmWayBill.	 Need to Discuss over this
-		//updatedPallet.VesselId = mmWayBill.   Need to Discuss over this
-		//updatedPallet.WayBillId = mmWayBill.	 Need to Discuss over this
-		//updatedPallet.MWayBillId = mmWayBill.	 Need to Discuss over this
-		updatedPallet.MMWayBillId = mmWayBill.MMWayBillId
+		//Update all the assets present in MMWayBill
+		for index, palletId := range mmWayBill.Pallets {
+			fmt.Println(index)
+			pallet := GetPallet(palletId)
+			updatedPallet := Pallet{}
+			updatedPallet.PalletId = pallet.PalletId
+			updatedPallet.Modeltype = pallet.Modeltype
+			updatedPallet.WayBill = pallet.WayBill
+			//updatedPallet.ContainerId = mmWayBill.	 Need to Discuss over this
+			//updatedPallet.VesselId = mmWayBill.   Need to Discuss over this
+			//updatedPallet.WayBillId = mmWayBill.	 Need to Discuss over this
+			//updatedPallet.MWayBillId = mmWayBill.	 Need to Discuss over this
+			updatedPallet.MMWayBillId = mmWayBill.MMWayBillId
 
-		CreateUpdatePallet(updatedPallet)
-	}
+			CreateUpdatePallet(updatedPallet)
+		}*/
 	dataToStore, _ := json.Marshal(mmWayBill)
 
 	err := stub.PutState(mmWayBill.MMWayBillId, []byte(dataToStore))
