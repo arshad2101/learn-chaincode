@@ -1281,6 +1281,8 @@ func (t *B4SCChaincode) Invoke(stub shim.ChaincodeStubInterface, function string
 		return CreateShipment(stub, args)
 	} else if function == "DumpData" {
 		return DumpData(stub, args)
+	} else if function == "CreateWayBill" {
+		return CreateWayBill(stub, args)
 	} else {
 		return nil, errors.New("Invalid function name " + function)
 	}
@@ -1303,6 +1305,8 @@ func (t *B4SCChaincode) Query(stub shim.ChaincodeStubInterface, function string,
 		return SearchPallet(stub, args)
 	} else if function == "SearchDateRange" {
 		return SearchDateRange(stub, args)
+	} else if function == "ViewWayBill" {
+		return ViewWayBill(stub, args)
 	} else {
 		return nil, errors.New("Invalid function name " + function)
 	}
