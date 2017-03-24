@@ -301,7 +301,8 @@ func CreateWayBill(stub shim.ChaincodeStubInterface, args []string) ([]byte, err
 
 func parseWayBillRequest(jsondata string) CreateWayBillRequest {
 	res := CreateWayBillRequest{}
-	json.Unmarshal([]byte(jsondata), &res)
+	err := json.Unmarshal([]byte(jsondata), &res)
+	fmt.Println("Unmarshall Error ", err)
 	fmt.Println(res)
 	return res
 }
