@@ -62,7 +62,6 @@ type Asset struct {
 	MMWayBillId string
 }
 
-/*
 type WayBill struct {
 	WayBillId        string
 	Consigner        string
@@ -75,9 +74,8 @@ type WayBill struct {
 	Assets           []string
 	Cartons          []string
 	Pallets          []string
-}*/
+}
 
-/*
 type CreateWayBillRequest struct {
 	WayBillId        string
 	Consigner        string
@@ -90,7 +88,7 @@ type CreateWayBillRequest struct {
 	Assets           []string
 	Cartons          []string
 	Pallets          []string
-}*/
+}
 
 type CreateWayBillResponse struct {
 	Err     string `json:"err"`
@@ -476,7 +474,7 @@ func fetchShipmentData(stub shim.ChaincodeStubInterface, shipmentNumber string) 
 
 /************** View Shipment Ends ************************/
 
-/************** Create WayBill Starts ************************
+/************** Create WayBill Starts ************************/
 
 func CreateWayBill(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	fmt.Println("Entering Master Master WayBill")
@@ -1020,168 +1018,4 @@ func main() {
 	} else {
 		fmt.Println("B4SCChaincode successfully started")
 	}
-}
-
-/************** Create wayBill Starts ************************/
-func CreateWayBill(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
-	fmt.Println("Entering CreateWayBill", args[0])
-
-	wayBillRequest := parseWayBillRequest(args[0])
-
-	return processWayBill(stub, wayBillRequest)
-
-}
-
-func parseWayBillRequest(jsondata string) CreateWayBillRequest {
-	res := CreateWayBillRequest{}
-	json.Unmarshal([]byte(jsondata), &res)
-	fmt.Println(res)
-	return res
-}
-func processWayBill(stub shim.ChaincodeStubInterface, createWayBillRequest CreateWayBillRequest) ([]byte, error) {
-	wayBill := WayBill{}
-	//	shipmentIndex := ShipmentIndex{}
-	wayBill.wayBillNumber = createWayBillRequest.wayBillNumber
-	wayBill.shipmentNumber = createWayBillRequest.shipmentNumber
-	wayBill.countryFrom = createWayBillRequest.countryFrom
-	wayBill.countryTo = createWayBillRequest.countryTo
-	wayBill.consigner = createWayBillRequest.consigner
-	wayBill.consignee = createWayBillRequest.consignee
-	wayBill.custodian = createWayBillRequest.custodian
-	wayBill.custodianHistory = createWayBillRequest.custodianHistory
-	wayBill.personConsigningGoods = createWayBillRequest.personConsigningGoods
-	wayBill.comments = createWayBillRequest.comments
-	wayBill.tpComments = createWayBillRequest.tpComments
-	wayBill.vehicleNumber = createWayBillRequest.vehicleNumber
-	wayBill.vehicleType = createWayBillRequest.vehicleType
-	wayBill.pickupDate = createWayBillRequest.pickupDate
-	wayBill.palletsSerialNumber = createWayBillRequest.palletsSerialNumber
-	wayBill.addressOfConsigner = createWayBillRequest.addressOfConsigner
-	wayBill.addressOfConsignee = createWayBillRequest.addressOfConsignee
-	wayBill.consignerRegNumber = createWayBillRequest.consignerRegNumber
-	wayBill.carrier = createWayBillRequest.carrier
-	wayBill.vesselType = createWayBillRequest.vesselType
-	wayBill.vesselNumber = createWayBillRequest.vesselNumber
-	wayBill.containerNumber = createWayBillRequest.containerNumber
-	wayBill.serviceType = createWayBillRequest.serviceType
-	wayBill.shipmentModel = createWayBillRequest.shipmentModel
-	wayBill.palletsQuantity = createWayBillRequest.palletsQuantity
-	wayBill.cartonsQuantity = createWayBillRequest.cartonsQuantity
-	wayBill.assetsQuantity = createWayBillRequest.assetsQuantity
-	wayBill.shipmentValue = createWayBillRequest.shipmentValue
-	wayBill.entityName = createWayBillRequest.entityName
-	wayBill.shipmentCreationDate = createWayBillRequest.shipmentCreationDate
-	wayBill.ewWayBillNumber = createWayBillRequest.ewWayBillNumber
-	wayBill.supportiveDocuments = createWayBillRequest.supportiveDocuments
-	wayBill.shipmentCreatedBy = createWayBillRequest.shipmentCreatedBy
-	wayBill.shipmentModifiedDate = createWayBillRequest.shipmentModifiedDate
-	wayBill.shipmentModifiedBy = createWayBillRequest.shipmentModifiedBy
-	wayBill.wayBillCreationDate = createWayBillRequest.wayBillCreationDate
-	wayBill.wayBillCreatedBy = createWayBillRequest.wayBillCreatedBy
-	wayBill.wayBillModifiedDate = createWayBillRequest.wayBillModifiedDate
-	wayBill.wayBillModifiedBy = createWayBillRequest.wayBillModifiedBy
-	dataToStore, _ := json.Marshal(wayBill)
-	fmt.Println("WayBill Number From Request", createWayBillRequest.wayBillNumber)
-
-	fmt.Println("WayBill Number", wayBill.wayBillNumber)
-	fmt.Println("WayBill to Store", dataToStore)
-
-	err := stub.PutState(wayBill.wayBillNumber, []byte(dataToStore))
-	if err != nil {
-		fmt.Println("Could not save WayBill to ledger", err)
-		return nil, err
-	}
-
-	resp := CreateWayBillResponse{}
-	resp.Err = "000"
-	resp.Message = wayBill.wayBillNumber
-	respString, _ := json.Marshal(resp)
-
-	fmt.Println("Successfully saved Way Bill")
-	return []byte(respString), nil
-
-}
-
-/************** Create WayBill Ends *************************/
-type CreateWayBillRequest struct {
-	wayBillNumber         string
-	shipmentNumber        string
-	countryFrom           string
-	countryTo             string
-	consigner             string
-	consignee             string
-	custodian             string
-	custodianHistory      []string
-	personConsigningGoods string
-	comments              string
-	tpComments            string
-	vehicleNumber         string
-	vehicleType           string
-	pickupDate            string
-	palletsSerialNumber   []string
-	addressOfConsigner    string
-	addressOfConsignee    string
-	consignerRegNumber    string
-	carrier               string
-	vesselType            string
-	vesselNumber          string
-	containerNumber       string
-	serviceType           string
-	shipmentModel         string
-	palletsQuantity       string
-	cartonsQuantity       string
-	assetsQuantity        string
-	shipmentValue         string
-	entityName            string
-	shipmentCreationDate  string
-	ewWayBillNumber       string
-	supportiveDocuments   []string
-	shipmentCreatedBy     string
-	shipmentModifiedDate  string
-	shipmentModifiedBy    string
-	wayBillCreationDate   string
-	wayBillCreatedBy      string
-	wayBillModifiedDate   string
-	wayBillModifiedBy     string
-}
-type WayBill struct {
-	wayBillNumber         string
-	shipmentNumber        string
-	countryFrom           string
-	countryTo             string
-	consigner             string
-	consignee             string
-	custodian             string
-	custodianHistory      []string
-	personConsigningGoods string
-	comments              string
-	tpComments            string
-	vehicleNumber         string
-	vehicleType           string
-	pickupDate            string
-	palletsSerialNumber   []string
-	addressOfConsigner    string
-	addressOfConsignee    string
-	consignerRegNumber    string
-	carrier               string
-	vesselType            string
-	vesselNumber          string
-	containerNumber       string
-	serviceType           string
-	shipmentModel         string
-	palletsQuantity       string
-	cartonsQuantity       string
-	assetsQuantity        string
-	shipmentValue         string
-	entityName            string
-	shipmentCreationDate  string
-	ewWayBillNumber       string
-	supportiveDocuments   []string
-	shipmentCreatedBy     string
-	shipmentModifiedDate  string
-	shipmentModifiedBy    string
-	wayBillCreationDate   string
-	wayBillCreatedBy      string
-	wayBillModifiedDate   string
-	wayBillModifiedBy     string
 }
