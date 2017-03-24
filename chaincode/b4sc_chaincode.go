@@ -76,6 +76,7 @@ type WayBill struct {
 	Pallets          []string
 }
 
+/*
 type CreateWayBillRequest struct {
 	WayBillId        string
 	Consigner        string
@@ -88,7 +89,7 @@ type CreateWayBillRequest struct {
 	Assets           []string
 	Cartons          []string
 	Pallets          []string
-}
+}*/
 
 type CreateWayBillResponse struct {
 	Err     string `json:"err"`
