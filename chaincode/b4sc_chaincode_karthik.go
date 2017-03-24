@@ -272,7 +272,7 @@ type EntityWayBillMapping struct {
 }
 type CreateEntityWayBillMappingRequest struct {
 	EntityName     string
-	EayBillsNumber []string
+	WayBillsNumber []string
 }
 type EntityWayBillMappingResponse struct {
 	Err     string `json:"err"`
@@ -519,7 +519,7 @@ func InsertEntityMapping(stub shim.ChaincodeStubInterface, args []string) ([]byt
 	fmt.Println(createEntityWayBillMappingRequest)
 
 	entityWayBillMapping := EntityWayBillMapping{}
-	entityWayBillMapping.EayBillsNumber = createEntityWayBillMappingRequest.WayBillsNumber
+	entityWayBillMapping.WayBillsNumber = createEntityWayBillMappingRequest.WayBillsNumber
 
 	dataToStore, _ := json.Marshal(entityWayBillMapping)
 
