@@ -271,7 +271,7 @@ type EntityWayBillMapping struct {
 	EayBillsNumber []string
 }
 type CreateEntityWayBillMappingRequest struct {
-	entityName     string
+	EntityName     string
 	EayBillsNumber []string
 }
 type EntityWayBillMappingResponse struct {
@@ -523,7 +523,7 @@ func InsertEntityMapping(stub shim.ChaincodeStubInterface, args []string) ([]byt
 
 	dataToStore, _ := json.Marshal(entityWayBillMapping)
 
-	err := stub.PutState(createEntityWayBillMappingRequest.entityName, []byte(dataToStore))
+	err := stub.PutState(createEntityWayBillMappingRequest.EntityName, []byte(dataToStore))
 	if err != nil {
 		fmt.Println("Could not save Entity Mapping to ledger", err)
 		return nil, err
@@ -531,7 +531,7 @@ func InsertEntityMapping(stub shim.ChaincodeStubInterface, args []string) ([]byt
 
 	resp := EntityWayBillMappingResponse{}
 	resp.Err = "000"
-	resp.Message = createEntityWayBillMappingRequest.entityName
+	resp.Message = createEntityWayBillMappingRequest.EntityName
 
 	respString, _ := json.Marshal(resp)
 
