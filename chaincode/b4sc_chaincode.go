@@ -62,6 +62,7 @@ type Asset struct {
 	MMWayBillId string
 }
 
+/*
 type WayBill struct {
 	WayBillId        string
 	Consigner        string
@@ -74,7 +75,7 @@ type WayBill struct {
 	Assets           []string
 	Cartons          []string
 	Pallets          []string
-}
+}*/
 
 /*
 type CreateWayBillRequest struct {
@@ -1103,6 +1104,47 @@ func processWayBill(stub shim.ChaincodeStubInterface, createWayBillRequest Creat
 
 /************** Create WayBill Ends *************************/
 type CreateWayBillRequest struct {
+	wayBillNumber         string
+	shipmentNumber        string
+	countryFrom           string
+	countryTo             string
+	consigner             string
+	consignee             string
+	custodian             string
+	custodianHistory      []string
+	personConsigningGoods string
+	comments              string
+	tpComments            string
+	vehicleNumber         string
+	vehicleType           string
+	pickupDate            string
+	palletsSerialNumber   []string
+	addressOfConsigner    string
+	addressOfConsignee    string
+	consignerRegNumber    string
+	carrier               string
+	vesselType            string
+	vesselNumber          string
+	containerNumber       string
+	serviceType           string
+	shipmentModel         string
+	palletsQuantity       string
+	cartonsQuantity       string
+	assetsQuantity        string
+	shipmentValue         string
+	entityName            string
+	shipmentCreationDate  string
+	ewWayBillNumber       string
+	supportiveDocuments   []string
+	shipmentCreatedBy     string
+	shipmentModifiedDate  string
+	shipmentModifiedBy    string
+	wayBillCreationDate   string
+	wayBillCreatedBy      string
+	wayBillModifiedDate   string
+	wayBillModifiedBy     string
+}
+type WayBill struct {
 	wayBillNumber         string
 	shipmentNumber        string
 	countryFrom           string
