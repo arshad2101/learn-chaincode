@@ -348,6 +348,8 @@ func processWayBill(stub shim.ChaincodeStubInterface, createWayBillRequest Creat
 	wayBill.wayBillModifiedDate = createWayBillRequest.wayBillModifiedDate
 	wayBill.wayBillModifiedBy = createWayBillRequest.wayBillModifiedBy
 	dataToStore, _ := json.Marshal(wayBill)
+	fmt.Println("WayBill Number From Request", createWayBillRequest.wayBillNumber)
+
 	fmt.Println("WayBill Number", wayBill.wayBillNumber)
 	fmt.Println("WayBill to Store", dataToStore)
 
