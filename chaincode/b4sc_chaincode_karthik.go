@@ -215,59 +215,59 @@ type CreateWayBillResponse struct {
 }
 
 type EWWayBill struct {
-	ewWayBillNumber       string
-	wayBillsNumber        []string
-	shipmentsNumber       []string
-	countryFrom           string
-	countryTo             string
-	consigner             string
-	consignee             string
-	custodian             string
-	custodianHistory      []string
-	custodianTime         string
-	personConsigningGoods string
-	comments              string
-	palletsSerialNumber   []string
-	addressOfConsigner    string
-	addressOfConsignee    string
-	consignerRegNumber    string
-	vesselType            string
-	vesselNumber          string
-	containerNumber       string
-	serviceType           string
-	supportiveDocuments   []string
-	ewWayBillCreationDate string
-	ewWayBillCreatedBy    string
-	ewWayBillModifiedDate string
-	ewWayBillModifiedBy   string
+	EwWayBillNumber       string
+	WayBillsNumber        []string
+	ShipmentsNumber       []string
+	CountryFrom           string
+	CountryTo             string
+	Consigner             string
+	Consignee             string
+	Custodian             string
+	CustodianHistory      []string
+	CustodianTime         string
+	PersonConsigningGoods string
+	Comments              string
+	PalletsSerialNumber   []string
+	AddressOfConsigner    string
+	AddressOfConsignee    string
+	ConsignerRegNumber    string
+	VesselType            string
+	VesselNumber          string
+	ContainerNumber       string
+	ServiceType           string
+	SupportiveDocuments   []string
+	EwWayBillCreationDate string
+	EwWayBillCreatedBy    string
+	EwWayBillModifiedDate string
+	EwWayBillModifiedBy   string
 }
 
 type CreateEWWayBillRequest struct {
-	ewWayBillNumber       string
-	wayBillsNumber        []string
-	shipmentsNumber       []string
-	countryFrom           string
-	countryTo             string
-	consigner             string
-	consignee             string
-	custodian             string
-	custodianHistory      []string
-	custodianTime         string
-	personConsigningGoods string
-	comments              string
-	palletsSerialNumber   []string
-	addressOfConsigner    string
-	addressOfConsignee    string
-	consignerRegNumber    string
-	vesselType            string
-	vesselNumber          string
-	containerNumber       string
-	serviceType           string
-	supportiveDocuments   []string
-	ewWayBillCreationDate string
-	ewWayBillCreatedBy    string
-	ewWayBillModifiedDate string
-	ewWayBillModifiedBy   string
+	EwWayBillNumber       string
+	WayBillsNumber        []string
+	ShipmentsNumber       []string
+	CountryFrom           string
+	CountryTo             string
+	Consigner             string
+	Consignee             string
+	Custodian             string
+	CustodianHistory      []string
+	CustodianTime         string
+	PersonConsigningGoods string
+	Comments              string
+	PalletsSerialNumber   []string
+	AddressOfConsigner    string
+	AddressOfConsignee    string
+	ConsignerRegNumber    string
+	VesselType            string
+	VesselNumber          string
+	ContainerNumber       string
+	ServiceType           string
+	SupportiveDocuments   []string
+	EwWayBillCreationDate string
+	EwWayBillCreatedBy    string
+	EwWayBillModifiedDate string
+	EwWayBillModifiedBy   string
 }
 
 type CreateEWWayBillResponse struct {
@@ -276,17 +276,17 @@ type CreateEWWayBillResponse struct {
 	Message string `json:"message"`
 }
 type EntityWayBillMapping struct {
-	wayBillsNumber []string
+	EayBillsNumber []string
 }
 
 type EntityDetails struct {
-	entityName      string
-	entityType      string
-	entityAddress   string
-	entityRegNumber string
-	entityCountry   string
-	latitude        string
-	longitude       string
+	EntityName      string
+	EntityType      string
+	EntityAddress   string
+	EntityRegNumber string
+	EntityCountry   string
+	Latitude        string
+	Longitude       string
 }
 
 /************** Create wayBill Starts ************************/
@@ -428,35 +428,35 @@ func processEWWayBill(stub shim.ChaincodeStubInterface, createEWWayBillRequest C
 	ewWayBill := EWWayBill{}
 	//	shipmentIndex := ShipmentIndex{}
 
-	ewWayBill.ewWayBillNumber = createEWWayBillRequest.ewWayBillNumber
-	ewWayBill.wayBillsNumber = createEWWayBillRequest.wayBillsNumber
-	ewWayBill.shipmentsNumber = createEWWayBillRequest.shipmentsNumber
-	ewWayBill.countryFrom = createEWWayBillRequest.countryFrom
-	ewWayBill.countryTo = createEWWayBillRequest.countryTo
-	ewWayBill.consigner = createEWWayBillRequest.consigner
-	ewWayBill.consignee = createEWWayBillRequest.consignee
-	ewWayBill.custodian = createEWWayBillRequest.custodian
-	ewWayBill.custodianHistory = createEWWayBillRequest.custodianHistory
-	ewWayBill.custodianTime = createEWWayBillRequest.custodianTime
-	ewWayBill.personConsigningGoods = createEWWayBillRequest.personConsigningGoods
-	ewWayBill.comments = createEWWayBillRequest.comments
-	ewWayBill.palletsSerialNumber = createEWWayBillRequest.palletsSerialNumber
-	ewWayBill.addressOfConsigner = createEWWayBillRequest.addressOfConsigner
-	ewWayBill.addressOfConsignee = createEWWayBillRequest.addressOfConsignee
-	ewWayBill.consignerRegNumber = createEWWayBillRequest.consignerRegNumber
-	ewWayBill.vesselType = createEWWayBillRequest.vesselType
-	ewWayBill.vesselNumber = createEWWayBillRequest.vesselNumber
-	ewWayBill.containerNumber = createEWWayBillRequest.containerNumber
-	ewWayBill.serviceType = createEWWayBillRequest.serviceType
-	ewWayBill.supportiveDocuments = createEWWayBillRequest.supportiveDocuments
-	ewWayBill.ewWayBillCreationDate = createEWWayBillRequest.ewWayBillCreationDate
-	ewWayBill.ewWayBillCreatedBy = createEWWayBillRequest.ewWayBillCreatedBy
-	ewWayBill.ewWayBillModifiedDate = createEWWayBillRequest.ewWayBillModifiedDate
-	ewWayBill.ewWayBillModifiedBy = createEWWayBillRequest.ewWayBillModifiedBy
+	ewWayBill.EwWayBillNumber = createEWWayBillRequest.EwWayBillNumber
+	ewWayBill.WayBillsNumber = createEWWayBillRequest.WayBillsNumber
+	ewWayBill.ShipmentsNumber = createEWWayBillRequest.ShipmentsNumber
+	ewWayBill.CountryFrom = createEWWayBillRequest.CountryFrom
+	ewWayBill.CountryTo = createEWWayBillRequest.CountryTo
+	ewWayBill.Consigner = createEWWayBillRequest.Consigner
+	ewWayBill.Consignee = createEWWayBillRequest.Consignee
+	ewWayBill.Custodian = createEWWayBillRequest.Custodian
+	ewWayBill.CustodianHistory = createEWWayBillRequest.CustodianHistory
+	ewWayBill.CustodianTime = createEWWayBillRequest.CustodianTime
+	ewWayBill.PersonConsigningGoods = createEWWayBillRequest.PersonConsigningGoods
+	ewWayBill.Comments = createEWWayBillRequest.Comments
+	ewWayBill.PalletsSerialNumber = createEWWayBillRequest.PalletsSerialNumber
+	ewWayBill.AddressOfConsigner = createEWWayBillRequest.AddressOfConsigner
+	ewWayBill.AddressOfConsignee = createEWWayBillRequest.AddressOfConsignee
+	ewWayBill.ConsignerRegNumber = createEWWayBillRequest.ConsignerRegNumber
+	ewWayBill.VesselType = createEWWayBillRequest.VesselType
+	ewWayBill.VesselNumber = createEWWayBillRequest.VesselNumber
+	ewWayBill.ContainerNumber = createEWWayBillRequest.ContainerNumber
+	ewWayBill.ServiceType = createEWWayBillRequest.ServiceType
+	ewWayBill.SupportiveDocuments = createEWWayBillRequest.SupportiveDocuments
+	ewWayBill.EwWayBillCreationDate = createEWWayBillRequest.EwWayBillCreationDate
+	ewWayBill.EwWayBillCreatedBy = createEWWayBillRequest.EwWayBillCreatedBy
+	ewWayBill.EwWayBillModifiedDate = createEWWayBillRequest.EwWayBillModifiedDate
+	ewWayBill.EwWayBillModifiedBy = createEWWayBillRequest.EwWayBillModifiedBy
 
 	dataToStore, _ := json.Marshal(ewWayBill)
 
-	err := stub.PutState(ewWayBill.ewWayBillNumber, []byte(dataToStore))
+	err := stub.PutState(ewWayBill.EwWayBillNumber, []byte(dataToStore))
 	if err != nil {
 		fmt.Println("Could not save Export Warehouse Way Bill to ledger", err)
 		return nil, err
@@ -464,7 +464,7 @@ func processEWWayBill(stub shim.ChaincodeStubInterface, createEWWayBillRequest C
 
 	resp := CreateEWWayBillResponse{}
 	resp.Err = "000"
-	resp.Message = ewWayBill.ewWayBillNumber
+	resp.Message = ewWayBill.EwWayBillNumber
 
 	respString, _ := json.Marshal(resp)
 
