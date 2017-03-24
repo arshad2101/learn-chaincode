@@ -81,7 +81,6 @@ type AssetDetails struct {
 	dcWayBillDate      string
 	ewWayBillDate      string
 }
-
 type CartonDetails struct {
 	cartonSerialNumber string
 	cartonModel        string
@@ -102,7 +101,6 @@ type CartonDetails struct {
 	dcWayBillDate      string
 	ewWayBillDate      string
 }
-
 type PalletDetails struct {
 	palletSerialNumber string
 	palletModel        string
@@ -123,7 +121,6 @@ type PalletDetails struct {
 	dcWayBillDate      string
 	ewWayBillDate      string
 }
-
 type WayBill struct {
 	WayBillNumber         string
 	ShipmentNumber        string
@@ -165,7 +162,6 @@ type WayBill struct {
 	WayBillModifiedDate   string
 	WayBillModifiedBy     string
 }
-
 type CreateWayBillRequest struct {
 	WayBillNumber         string
 	ShipmentNumber        string
@@ -207,13 +203,11 @@ type CreateWayBillRequest struct {
 	WayBillModifiedDate   string
 	WayBillModifiedBy     string
 }
-
 type CreateWayBillResponse struct {
 	Err     string `json:"err"`
 	ErrMsg  string `json:"errMsg"`
 	Message string `json:"message"`
 }
-
 type EWWayBill struct {
 	EwWayBillNumber       string
 	WayBillsNumber        []string
@@ -241,7 +235,6 @@ type EWWayBill struct {
 	EwWayBillModifiedDate string
 	EwWayBillModifiedBy   string
 }
-
 type CreateEWWayBillRequest struct {
 	EwWayBillNumber       string
 	WayBillsNumber        []string
@@ -269,7 +262,6 @@ type CreateEWWayBillRequest struct {
 	EwWayBillModifiedDate string
 	EwWayBillModifiedBy   string
 }
-
 type CreateEWWayBillResponse struct {
 	Err     string `json:"err"`
 	ErrMsg  string `json:"errMsg"`
@@ -278,7 +270,15 @@ type CreateEWWayBillResponse struct {
 type EntityWayBillMapping struct {
 	EayBillsNumber []string
 }
-
+type CreateEntityWayBillMappingRequest struct {
+	entityName     string
+	EayBillsNumber []string
+}
+type EntityWayBillMappingResponse struct {
+	Err     string `json:"err"`
+	ErrMsg  string `json:"errMsg"`
+	Message string `json:"message"`
+}
 type EntityDetails struct {
 	EntityName      string
 	EntityType      string
@@ -289,7 +289,7 @@ type EntityDetails struct {
 	Longitude       string
 }
 
-/************** Create wayBill Starts ************************/
+/************** Create WayBill Starts ************************/
 func CreateWayBill(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	fmt.Println("Entering CreateWayBill", args[0])
 
@@ -298,7 +298,6 @@ func CreateWayBill(stub shim.ChaincodeStubInterface, args []string) ([]byte, err
 	return processWayBill(stub, wayBillRequest)
 
 }
-
 func parseWayBillRequest(jsondata string) CreateWayBillRequest {
 	res := CreateWayBillRequest{}
 	json.Unmarshal([]byte(jsondata), &res)
@@ -370,8 +369,8 @@ func processWayBill(stub shim.ChaincodeStubInterface, createWayBillRequest Creat
 }
 
 /************** Create WayBill Ends *************************/
-/************** View WayBill Starts ************************/
 
+/************** View WayBill Starts ************************/
 func ViewWayBill(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	fmt.Println("Entering ViewWayBill " + args[0])
 
@@ -409,7 +408,6 @@ func fetchWayBillData(stub shim.ChaincodeStubInterface, wayBillNumber string) (W
 /************** View WayBill Ends ************************/
 
 /************** Create Export Warehouse WayBill Starts ************************/
-
 func CreateEWWayBill(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	fmt.Println("Entering Export Warehouse WayBill ")
 
@@ -476,7 +474,6 @@ func processEWWayBill(stub shim.ChaincodeStubInterface, createEWWayBillRequest C
 /************** Create Export Warehouse WayBill Ends ************************/
 
 /************** View Export Warehouse WayBill Starts ************************/
-
 func ViewEWWayBill(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	fmt.Println("Entering ViewEWWayBill " + args[0])
 
@@ -511,7 +508,89 @@ func fetchEWWayBillData(stub shim.ChaincodeStubInterface, ewWayBillNumber string
 
 }
 
-/************** View Master WayBill Ends ************************/
+/************** View Export Warehouse WayBill Ends ************************/
+
+/************** Insert Entity Mapping Starts ************************/
+func InsertEntityMapping(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	fmt.Println("Entering Insert Entity Mapping")
+	jsondata := args[0]
+	createEntityWayBillMappingRequest := CreateEntityWayBillMappingRequest{}
+	json.Unmarshal([]byte(jsondata), &createEntityWayBillMappingRequest)
+	fmt.Println(createEntityWayBillMappingRequest)
+
+	entityWayBillMapping := EntityWayBillMapping{}
+	entityWayBillMapping.EayBillsNumber = createEntityWayBillMappingRequest.EayBillsNumber
+
+	dataToStore, _ := json.Marshal(entityWayBillMapping)
+
+	err := stub.PutState(createEntityWayBillMappingRequest.entityName, []byte(dataToStore))
+	if err != nil {
+		fmt.Println("Could not save Entity Mapping to ledger", err)
+		return nil, err
+	}
+
+	resp := EntityWayBillMappingResponse{}
+	resp.Err = "000"
+	resp.Message = createEntityWayBillMappingRequest.entityName
+
+	respString, _ := json.Marshal(resp)
+
+	fmt.Println("Successfully saved Entity Mapping Way Bill")
+	return []byte(respString), nil
+
+}
+
+/************** Update Entity Mapping Ends ************************/
+
+/************** Update Entity Mapping Starts ************************/
+func UpdateEntityMapping(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	fmt.Println("Entering Update Entity Mapping")
+	entityName := args[0]
+	wayBillNumber := args[1]
+	entityWayBillMapping, err1 := GetWayBillEntityMapping(stub, entityName)
+	fmt.Println("Could not Get Entity Mapping from ledger", err1)
+
+	updateEntityWayBillMapping := append(entityWayBillMapping.EayBillsNumber, wayBillNumber)
+	fmt.Println("Updated Entity", updateEntityWayBillMapping)
+	dataToStore, _ := json.Marshal(updateEntityWayBillMapping)
+	err := stub.PutState(entityName, []byte(dataToStore))
+	if err != nil {
+		fmt.Println("Could not save Entity Mapping to ledger", err)
+		return nil, err
+	}
+
+	resp := EntityWayBillMappingResponse{}
+	resp.Err = "000"
+	resp.Message = entityName
+
+	respString, _ := json.Marshal(resp)
+
+	fmt.Println("Successfully saved Entity Mapping Way Bill")
+	return []byte(respString), nil
+
+}
+
+/************** Update Entity Mapping Ends ************************/
+
+/************** Get Entity Mapping Starts ************************/
+func GetWayBillEntityMapping(stub shim.ChaincodeStubInterface, entityName string) (EntityWayBillMapping, error) {
+	fmt.Println("Entering Get Entity Mapping")
+	var entityWayBillMapping EntityWayBillMapping
+	indexByte, err := stub.GetState(entityName)
+	if err != nil {
+		fmt.Println("Could not retrive Entity Mapping ", err)
+		return entityWayBillMapping, err
+	}
+
+	if marshErr := json.Unmarshal(indexByte, &entityWayBillMapping); marshErr != nil {
+		fmt.Println("Could not retrieve Entity Mapping from ledger", marshErr)
+		return entityWayBillMapping, marshErr
+	}
+	return entityWayBillMapping, nil
+}
+
+/************** Get Entity Mapping Ends ************************/
+
 /**************Arshad End new code as per LLD****************/
 
 type WayBillHistory struct {
