@@ -167,20 +167,20 @@ type WayBill struct {
 }
 
 type CreateWayBillRequest struct {
-	wayBillNumber         string
-	shipmentNumber        string
-	countryFrom           string
-	countryTo             string
-	consigner             string
-	consignee             string
-	custodian             string
-	custodianHistory      []string
-	personConsigningGoods string
-	comments              string
-	tpComments            string
-	vehicleNumber         string
-	vehicleType           string
-	pickupDate            string
+	wayBillNumber         string   `json:"wayBillNumber"`
+	shipmentNumber        string   `json:"shipmentNumber"`
+	countryFrom           string   `json:"countryFrom"`
+	countryTo             string   `json:"countryTo"`
+	consigner             string   `json:"consigner"`
+	consignee             string   `json:"consignee"`
+	custodian             string   `json:"custodian"`
+	custodianHistory      []string `json:"custodianHistory"`
+	personConsigningGoods string   `json:"personConsigningGoods"`
+	comments              string   `json:"comments"`
+	tpComments            string   `json:"tpComments"`
+	vehicleNumber         string   `json:"vehicleNumber"`
+	vehicleType           string   `json:"vehicleType"`
+	pickupDate            string   `json:"pickupDate"`
 	// palletsSerialNumber   []string
 	// addressOfConsigner    string
 	// addressOfConsignee    string
