@@ -77,17 +77,45 @@ type WayBill struct {
 }
 
 type CreateWayBillRequest struct {
-	WayBillId        string
-	Consigner        string
-	ConsignerAddress string
-	Consignee        string
-	ConsigneeAddress string
-	ConsigneeRegNo   string
-	LastModifiedDate string
-	Quantity         int
-	Assets           []string
-	Cartons          []string
-	Pallets          []string
+	wayBillNumber         string
+	shipmentNumber        string
+	countryFrom           string
+	countryTo             string
+	consigner             string
+	consignee             string
+	custodian             string
+	custodianHistory      []string
+	personConsigningGoods string
+	comments              string
+	tpComments            string
+	vehicleNumber         string
+	vehicleType           string
+	pickupDate            string
+	palletsSerialNumber   []string
+	addressOfConsigner    string
+	addressOfConsignee    string
+	consignerRegNumber    string
+	carrier               string
+	vesselType            string
+	vesselNumber          string
+	containerNumber       string
+	serviceType           string
+	shipmentModel         string
+	palletsQuantity       string
+	cartonsQuantity       string
+	assetsQuantity        string
+	shipmentValue         string
+	entityName            string
+	shipmentCreationDate  string
+	ewWayBillNumber       string
+	supportiveDocuments   []string
+	shipmentCreatedBy     string
+	shipmentModifiedDate  string
+	shipmentModifiedBy    string
+	wayBillCreationDate   string
+	wayBillCreatedBy      string
+	wayBillModifiedDate   string
+	wayBillModifiedBy     string
 }
 
 type CreateWayBillResponse struct {
@@ -477,7 +505,7 @@ func fetchShipmentData(stub shim.ChaincodeStubInterface, shipmentNumber string) 
 /************** Create WayBill Starts ************************/
 
 func CreateWayBill(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
-	fmt.Println("Entering Master Master WayBill")
+	fmt.Println("Entering WayBill")
 
 	wayBillRequest := parseWayBillRequest(args[0])
 
