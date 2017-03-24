@@ -268,7 +268,7 @@ type CreateEWWayBillResponse struct {
 	Message string `json:"message"`
 }
 type EntityWayBillMapping struct {
-	EayBillsNumber []string
+	WayBillsNumber []string
 }
 type CreateEntityWayBillMappingRequest struct {
 	EntityName     string
@@ -519,7 +519,7 @@ func InsertEntityMapping(stub shim.ChaincodeStubInterface, args []string) ([]byt
 	fmt.Println(createEntityWayBillMappingRequest)
 
 	entityWayBillMapping := EntityWayBillMapping{}
-	entityWayBillMapping.EayBillsNumber = createEntityWayBillMappingRequest.EayBillsNumber
+	entityWayBillMapping.EayBillsNumber = createEntityWayBillMappingRequest.WayBillsNumber
 
 	dataToStore, _ := json.Marshal(entityWayBillMapping)
 
@@ -550,7 +550,7 @@ func UpdateEntityMapping(stub shim.ChaincodeStubInterface, args []string) ([]byt
 	entityWayBillMapping, err1 := fetchEntityWayBillMappingData(stub, entityName)
 	fmt.Println("Could not Get Entity Mapping from ledger", err1)
 
-	updatedEntityWayBillMapping := append(entityWayBillMapping.EayBillsNumber, wayBillNumber)
+	updatedEntityWayBillMapping := append(entityWayBillMapping.WayBillsNumber, wayBillNumber)
 	fmt.Println("Updated Entity", updatedEntityWayBillMapping)
 	dataToStore, _ := json.Marshal(updatedEntityWayBillMapping)
 	err := stub.PutState(entityName, []byte(dataToStore))
@@ -1386,11 +1386,12 @@ func (t *B4SCChaincode) Invoke(stub shim.ChaincodeStubInterface, function string
 		return CreateEWWayBill(stub, args)
 	} else if function == "InsertEntityMapping" {
 		return InsertEntityMapping(stub, args)
-	} else if function == "InsertEntityMapping" {
-		return InsertEntityMapping(stub, args)
+	} else if function == "UpdateEntityMapping" {
+		return UpdateEntityMapping(stub, args)
 	} else {
 		return nil, errors.New("Invalid function name " + function)
 	}
+
 	//return nil, nil
 }
 
