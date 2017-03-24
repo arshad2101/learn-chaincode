@@ -547,12 +547,12 @@ func UpdateEntityMapping(stub shim.ChaincodeStubInterface, args []string) ([]byt
 	fmt.Println("Entering Update Entity Mapping")
 	entityName := args[0]
 	wayBillNumber := args[1]
-	entityWayBillMapping, err1 := GetWayBillEntityMapping(stub, entityName)
+	entityWayBillMapping, err1 := fetchEntityWayBillMappingData(stub, entityName)
 	fmt.Println("Could not Get Entity Mapping from ledger", err1)
 
-	updateEntityWayBillMapping := append(entityWayBillMapping.EayBillsNumber, wayBillNumber)
-	fmt.Println("Updated Entity", updateEntityWayBillMapping)
-	dataToStore, _ := json.Marshal(updateEntityWayBillMapping)
+	updatedEntityWayBillMapping := append(entityWayBillMapping.EayBillsNumber, wayBillNumber)
+	fmt.Println("Updated Entity", updatedEntityWayBillMapping)
+	dataToStore, _ := json.Marshal(updatedEntityWayBillMapping)
 	err := stub.PutState(entityName, []byte(dataToStore))
 	if err != nil {
 		fmt.Println("Could not save Entity Mapping to ledger", err)
@@ -573,20 +573,36 @@ func UpdateEntityMapping(stub shim.ChaincodeStubInterface, args []string) ([]byt
 /************** Update Entity Mapping Ends ************************/
 
 /************** Get Entity Mapping Starts ************************/
-func GetWayBillEntityMapping(stub shim.ChaincodeStubInterface, entityName string) (EntityWayBillMapping, error) {
+func GetEntityWayBillMapping(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	fmt.Println("Entering Get Entity Mapping")
+	entityName := args[0]
+	wayBillEntityMappingData, dataerr := fetchEntityWayBillMappingData(stub, entityName)
+	if dataerr == nil {
+
+		dataToStore, _ := json.Marshal(wayBillEntityMappingData)
+		return []byte(dataToStore), nil
+
+	}
+
+	return nil, dataerr
+}
+
+func fetchEntityWayBillMappingData(stub shim.ChaincodeStubInterface, entityName string) (EntityWayBillMapping, error) {
 	var entityWayBillMapping EntityWayBillMapping
+
 	indexByte, err := stub.GetState(entityName)
 	if err != nil {
-		fmt.Println("Could not retrive Entity Mapping ", err)
+		fmt.Println("Could not retrive MWayBill ", err)
 		return entityWayBillMapping, err
 	}
 
 	if marshErr := json.Unmarshal(indexByte, &entityWayBillMapping); marshErr != nil {
-		fmt.Println("Could not retrieve Entity Mapping from ledger", marshErr)
+		fmt.Println("Could not retrieve master WayBill from ledger", marshErr)
 		return entityWayBillMapping, marshErr
 	}
+
 	return entityWayBillMapping, nil
+
 }
 
 /************** Get Entity Mapping Ends ************************/
@@ -1368,6 +1384,10 @@ func (t *B4SCChaincode) Invoke(stub shim.ChaincodeStubInterface, function string
 		return CreateWayBill(stub, args)
 	} else if function == "CreateEWWayBill" {
 		return CreateEWWayBill(stub, args)
+	} else if function == "InsertEntityMapping" {
+		return InsertEntityMapping(stub, args)
+	} else if function == "InsertEntityMapping" {
+		return InsertEntityMapping(stub, args)
 	} else {
 		return nil, errors.New("Invalid function name " + function)
 	}
@@ -1394,6 +1414,8 @@ func (t *B4SCChaincode) Query(stub shim.ChaincodeStubInterface, function string,
 		return ViewWayBill(stub, args)
 	} else if function == "ViewEWWayBill" {
 		return ViewEWWayBill(stub, args)
+	} else if function == "GetEntityWayBillMapping" {
+		return GetEntityWayBillMapping(stub, args)
 	} else {
 		return nil, errors.New("Invalid function name " + function)
 	}
