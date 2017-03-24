@@ -291,7 +291,7 @@ type EntityDetails struct {
 
 /************** Create wayBill Starts ************************/
 func CreateWayBill(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
-	fmt.Println("Entering CreateWayBill")
+	fmt.Println("Entering CreateWayBill", args[0])
 
 	wayBillRequest := parseWayBillRequest(args[0])
 
