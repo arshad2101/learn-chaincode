@@ -522,7 +522,7 @@ func processWayBill(stub shim.ChaincodeStubInterface, createWayBillRequest Creat
 	wayBill := WayBill{}
 	//	shipmentIndex := ShipmentIndex{}
 
-	wayBill.WayBillId = createWayBillRequest.WayBillId
+	/*wayBill.WayBillId = createWayBillRequest.WayBillId
 	wayBill.Consigner = createWayBillRequest.Consigner
 	wayBill.ConsignerAddress = createWayBillRequest.ConsignerAddress
 	wayBill.Consignee = createWayBillRequest.Consignee
@@ -531,7 +531,7 @@ func processWayBill(stub shim.ChaincodeStubInterface, createWayBillRequest Creat
 	wayBill.Quantity = createWayBillRequest.Quantity
 	wayBill.Assets = createWayBillRequest.Assets
 	wayBill.Cartons = createWayBillRequest.Cartons
-	wayBill.Pallets = createWayBillRequest.Pallets
+	wayBill.Pallets = createWayBillRequest.Pallet*/
 
 	dataToStore, _ := json.Marshal(wayBill)
 
