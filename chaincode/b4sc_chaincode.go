@@ -77,8 +77,8 @@ type WayBill struct {
 }
 
 type CreateWayBillRequest struct {
-	wayBillNumber  string
-	shipmentNumber string
+	WayBillNumber  string
+	ShipmentNumber string
 }
 
 type CreateWayBillResponse struct {
