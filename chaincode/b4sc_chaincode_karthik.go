@@ -511,7 +511,7 @@ func fetchEWWayBillData(stub shim.ChaincodeStubInterface, ewWayBillNumber string
 /************** View Export Warehouse WayBill Ends ************************/
 
 /************** Insert Entity Mapping Starts ************************/
-func InsertEntityMapping(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+func InsertEntityWayBillMapping(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	fmt.Println("Entering Insert Entity Mapping")
 	jsondata := args[0]
 	createEntityWayBillMappingRequest := CreateEntityWayBillMappingRequest{}
@@ -543,14 +543,13 @@ func InsertEntityMapping(stub shim.ChaincodeStubInterface, args []string) ([]byt
 /************** Update Entity Mapping Ends ************************/
 
 /************** Update Entity Mapping Starts ************************/
-func UpdateEntityMapping(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+func UpdateEntityWayBillMapping(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	fmt.Println("Entering Update Entity Mapping")
+	updatedEntityWayBillMapping := EntityWayBillMapping{}
 	entityName := args[0]
 	wayBillNumber := args[1]
-	entityWayBillMapping, err1 := fetchEntityWayBillMappingData(stub, entityName)
-	fmt.Println("Could not Get Entity Mapping from ledger", err1)
-
-	updatedEntityWayBillMapping := append(entityWayBillMapping.WayBillsNumber, wayBillNumber)
+	entityWayBillMapping, _ := fetchEntityWayBillMappingData(stub, entityName)
+	updatedEntityWayBillMapping.WayBillsNumber = append(entityWayBillMapping.WayBillsNumber, wayBillNumber)
 	fmt.Println("Updated Entity", updatedEntityWayBillMapping)
 	dataToStore, _ := json.Marshal(updatedEntityWayBillMapping)
 	err := stub.PutState(entityName, []byte(dataToStore))
@@ -1384,10 +1383,10 @@ func (t *B4SCChaincode) Invoke(stub shim.ChaincodeStubInterface, function string
 		return CreateWayBill(stub, args)
 	} else if function == "CreateEWWayBill" {
 		return CreateEWWayBill(stub, args)
-	} else if function == "InsertEntityMapping" {
-		return InsertEntityMapping(stub, args)
-	} else if function == "UpdateEntityMapping" {
-		return UpdateEntityMapping(stub, args)
+	} else if function == "InsertEntityWayBillMapping" {
+		return InsertEntityWayBillMapping(stub, args)
+	} else if function == "UpdateEntityWayBillMapping" {
+		return UpdateEntityWayBillMapping(stub, args)
 	} else {
 		return nil, errors.New("Invalid function name " + function)
 	}
