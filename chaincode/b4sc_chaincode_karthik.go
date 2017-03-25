@@ -291,7 +291,7 @@ type EntityDetails struct {
 
 /************** Create WayBill Starts ************************/
 func CreateWayBill(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
-	fmt.Println("Entering CreateWayBill", args[0])
+	fmt.Println("Entering Create WayBill", args[0])
 
 	wayBillRequest := parseWayBillRequest(args[0])
 
@@ -306,7 +306,6 @@ func parseWayBillRequest(jsondata string) CreateWayBillRequest {
 }
 func processWayBill(stub shim.ChaincodeStubInterface, createWayBillRequest CreateWayBillRequest) ([]byte, error) {
 	wayBill := WayBill{}
-	//	shipmentIndex := ShipmentIndex{}
 	wayBill.WayBillNumber = createWayBillRequest.WayBillNumber
 	wayBill.ShipmentNumber = createWayBillRequest.ShipmentNumber
 	wayBill.CountryFrom = createWayBillRequest.CountryFrom
@@ -347,10 +346,6 @@ func processWayBill(stub shim.ChaincodeStubInterface, createWayBillRequest Creat
 	wayBill.WayBillModifiedDate = createWayBillRequest.WayBillModifiedDate
 	wayBill.WayBillModifiedBy = createWayBillRequest.WayBillModifiedBy
 	dataToStore, _ := json.Marshal(wayBill)
-	fmt.Println("WayBill Number From Request", createWayBillRequest.WayBillNumber)
-
-	fmt.Println("WayBill Number", wayBill.WayBillNumber)
-	fmt.Println("WayBill to Store", dataToStore)
 
 	err := stub.PutState(wayBill.WayBillNumber, []byte(dataToStore))
 	if err != nil {
@@ -424,8 +419,6 @@ func parseEWWayBillRequest(jsondata string) CreateEWWayBillRequest {
 }
 func processEWWayBill(stub shim.ChaincodeStubInterface, createEWWayBillRequest CreateEWWayBillRequest) ([]byte, error) {
 	ewWayBill := EWWayBill{}
-	//	shipmentIndex := ShipmentIndex{}
-
 	ewWayBill.EwWayBillNumber = createEWWayBillRequest.EwWayBillNumber
 	ewWayBill.WayBillsNumber = createEWWayBillRequest.WayBillsNumber
 	ewWayBill.ShipmentsNumber = createEWWayBillRequest.ShipmentsNumber
@@ -495,12 +488,12 @@ func fetchEWWayBillData(stub shim.ChaincodeStubInterface, ewWayBillNumber string
 
 	indexByte, err := stub.GetState(ewWayBillNumber)
 	if err != nil {
-		fmt.Println("Could not retrive MWayBill ", err)
+		fmt.Println("Could not retrive Export Warehouse WayBill ", err)
 		return ewWayBill, err
 	}
 
 	if marshErr := json.Unmarshal(indexByte, &ewWayBill); marshErr != nil {
-		fmt.Println("Could not retrieve master WayBill from ledger", marshErr)
+		fmt.Println("Could not retrieve Export Warehouse from ledger", marshErr)
 		return ewWayBill, marshErr
 	}
 
@@ -510,9 +503,9 @@ func fetchEWWayBillData(stub shim.ChaincodeStubInterface, ewWayBillNumber string
 
 /************** View Export Warehouse WayBill Ends ************************/
 
-/************** Insert Entity Mapping Starts ************************/
-func InsertEntityWayBillMapping(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
-	fmt.Println("Entering Insert Entity Mapping")
+/************** Create Entity WayBill Mapping Starts ************************/
+func CreateEntityWayBillMapping(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	fmt.Println("Entering Create Entity WayBill Mapping")
 	jsondata := args[0]
 	createEntityWayBillMappingRequest := CreateEntityWayBillMappingRequest{}
 	json.Unmarshal([]byte(jsondata), &createEntityWayBillMappingRequest)
@@ -540,11 +533,11 @@ func InsertEntityWayBillMapping(stub shim.ChaincodeStubInterface, args []string)
 
 }
 
-/************** Update Entity Mapping Ends ************************/
+/************** Update Entity WayBill Mapping Ends ************************/
 
-/************** Update Entity Mapping Starts ************************/
+/************** Update Entity WayBill Mapping Starts ************************/
 func UpdateEntityWayBillMapping(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
-	fmt.Println("Entering Update Entity Mapping")
+	fmt.Println("Entering Update Entity WayBill Mapping")
 	updatedEntityWayBillMapping := EntityWayBillMapping{}
 	entityName := args[0]
 	wayBillNumber := args[1]
@@ -554,7 +547,7 @@ func UpdateEntityWayBillMapping(stub shim.ChaincodeStubInterface, args []string)
 	dataToStore, _ := json.Marshal(updatedEntityWayBillMapping)
 	err := stub.PutState(entityName, []byte(dataToStore))
 	if err != nil {
-		fmt.Println("Could not save Entity Mapping to ledger", err)
+		fmt.Println("Could not save Entity WayBill Mapping to ledger", err)
 		return nil, err
 	}
 
@@ -564,16 +557,16 @@ func UpdateEntityWayBillMapping(stub shim.ChaincodeStubInterface, args []string)
 
 	respString, _ := json.Marshal(resp)
 
-	fmt.Println("Successfully saved Entity Mapping Way Bill")
+	fmt.Println("Successfully saved Entity WayBill Mapping")
 	return []byte(respString), nil
 
 }
 
-/************** Update Entity Mapping Ends ************************/
+/************** Update Entity WayBill Mapping Ends ************************/
 
-/************** Get Entity Mapping Starts ************************/
+/************** Get Entity WayBill Mapping Starts ************************/
 func GetEntityWayBillMapping(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
-	fmt.Println("Entering Get Entity Mapping")
+	fmt.Println("Entering Get Entity WayBill Mapping")
 	entityName := args[0]
 	wayBillEntityMappingData, dataerr := fetchEntityWayBillMappingData(stub, entityName)
 	if dataerr == nil {
@@ -591,12 +584,12 @@ func fetchEntityWayBillMappingData(stub shim.ChaincodeStubInterface, entityName 
 
 	indexByte, err := stub.GetState(entityName)
 	if err != nil {
-		fmt.Println("Could not retrive MWayBill ", err)
+		fmt.Println("Could not retrive Entity WayBill Mapping ", err)
 		return entityWayBillMapping, err
 	}
 
 	if marshErr := json.Unmarshal(indexByte, &entityWayBillMapping); marshErr != nil {
-		fmt.Println("Could not retrieve master WayBill from ledger", marshErr)
+		fmt.Println("Could not retrieve Entity WayBill Mapping from ledger", marshErr)
 		return entityWayBillMapping, marshErr
 	}
 
@@ -1383,8 +1376,8 @@ func (t *B4SCChaincode) Invoke(stub shim.ChaincodeStubInterface, function string
 		return CreateWayBill(stub, args)
 	} else if function == "CreateEWWayBill" {
 		return CreateEWWayBill(stub, args)
-	} else if function == "InsertEntityWayBillMapping" {
-		return InsertEntityWayBillMapping(stub, args)
+	} else if function == "CreateEntityWayBillMapping" {
+		return CreateEntityWayBillMapping(stub, args)
 	} else if function == "UpdateEntityWayBillMapping" {
 		return UpdateEntityWayBillMapping(stub, args)
 	} else {
