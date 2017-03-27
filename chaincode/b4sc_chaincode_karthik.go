@@ -53,7 +53,122 @@ type Asset struct {
 	ShipmentIds []string
 }
 
-/************** Arshad This new struct for AssetDetails , CartonDetails , PalletDetails  is added by Arshad as to incorporate new LLD published orginal structure
+type WayBillHistory struct {
+	Name      string  `json:"name"`
+	Address   string  `json:"address"`
+	Status    string  `json:"status"`
+	Timestamp string  `json:"timestamp"`
+	Notes     string  `json:"notes"`
+	Lat       float64 `json:"lat"`
+	Log       float64 `json:"log"`
+}
+
+type Shipment struct {
+	ShipmentNumber        string           `json:"shipmentNumber"`
+	WayBillNo             string           `json:"wayBillNo"`
+	WayBillType           string           `json:"wayBillType"`
+	PersonConsigningGoods string           `json:"personConsigningGoods"`
+	Consigner             string           `json:"consigner"`
+	ConsignerAddress      string           `json:"consignerAddress"`
+	Consignee             string           `json:"consignee"`
+	ConsigneeAddress      string           `json:"consigneeAddress"`
+	ConsigneeRegNo        string           `json:"consigneeRegNo"`
+	Quantity              string           `json:"quantity"`
+	Pallets               []string         `json:"pallets"`
+	Cartons               []string         `json:"cartons"`
+	Status                string           `json:"status"`
+	ModelNo               string           `json:"modelNo"`
+	VehicleNumber         string           `json:"vehicleNumber"`
+	VehicleType           string           `json:"vehicleType"`
+	PickUpTime            string           `json:"pickUpTime"`
+	ValueOfGoods          string           `json:"valueOfGoods"`
+	ContainerId           string           `json:"containerId"`
+	MasterWayBillRef      []string         `json:"masterWayBillRef"`
+	WayBillHistorys       []WayBillHistory `json:"wayBillHistorys"`
+	Carrier               string           `json:"carrier"`
+	Acl                   []string         `json:"acl"`
+	CreatedBy             string           `json:"createdBy"`
+	Custodian             string           `json:"custodian"`
+	CreatedTimeStamp      string           `json:"createdTimeStamp"`
+	UpdatedTimeStamp      string           `json:"updatedTimeStamp"`
+}
+
+type ShipmentIndex struct {
+	ShipmentNumber string
+	Status         string
+	Acl            []string
+}
+
+type AllShipment struct {
+	ShipmentIndexArr []ShipmentIndex
+}
+
+type AllShipmentDump struct {
+	ShipmentIndexArr []string `json:"shipmentIndexArr"`
+}
+
+type Entity struct {
+	EntityId        string  `json:"entityId"`
+	EntityName      string  `json:"entityName"`
+	EntityType      string  `json:"entityType"`
+	EntityAddress   string  `json:"entityAddress"`
+	EntityRegNumber string  `json:"entityRegNumber"`
+	EntityCountry   string  `json:"entityCountry"`
+	Latitude        float64 `json:"latitude"`
+	Longitude       float64 `json:"longitude"`
+}
+
+//Will be avlable in the WorldStats as "ALL_ENTITIES"
+type AllEntities struct {
+	EntityArr []string `json:"entityArr"`
+}
+
+//Will be avlable in the WorldStats as "ASSET_MODEL_NAMES"
+type AssetModelDetails struct {
+	ModelNames []string `json:"modelNames"`
+}
+
+type WorkflowDetails struct {
+	FromEntity  string   `json:"fromEntity"`
+	ToEntity    string   `json:"toEntity"`
+	Carrier     string   `json:"carrier"`
+	EntityOrder []string `json:"entityOrder"`
+}
+
+//Will be available in the WorldStats as "ALL_WORKFLOWS"
+type AllWorkflows struct {
+	Workflows []WorkflowDetails `json:"workflows"`
+}
+
+/************** ShipmentPageLoad Starts ********************/
+
+type ShipmentPageLoadRequest struct {
+	CallingEntityName string `json:"callingEntityName"`
+}
+
+type ConsignerShipmentPageLoadResponse struct {
+	ConsignerId        string `json:"consignerId"`
+	ConsignerName      string `json:"consignerName"`
+	ConsignerAddress   string `json:"consignerAddress"`
+	ConsignerRegNumber string `json:"consignerRegNumber"`
+}
+
+type ConsigneeShipmentPageLoadResponse struct {
+	ConsigneeId      string `json:"consigneeId"`
+	ConsigneeName    string `json:"consigneeName"`
+	ConsigneeAddress string `json:"consigneeAddress"`
+	ConsigneeCountry string `json:"consigneeCountry"`
+}
+
+type ShipmentPageLoadResponse struct {
+	CallingEntityName string                              `json:"callingEntityName"`
+	Consigner         ConsignerShipmentPageLoadResponse   `json:"consigner"`
+	Consignee         []ConsigneeShipmentPageLoadResponse `json:"consignee"`
+	Carrier           []string                            `json:"carrier"`
+	ModelNames        []string                            `json:"modelNames"`
+}
+
+/************** Arshad Start Code This new struct for AssetDetails , CartonDetails , PalletDetails  is added by Arshad as to incorporate new LLD published orginal structure
 are not touched as of now to avoid break of any functionality devloped by Kartik 20/3/2017***************/
 
 type AssetDetails struct {
@@ -81,8 +196,38 @@ type AssetDetails struct {
 	dcWayBillDate      string
 	ewWayBillDate      string
 }
-type CartonDetails struct {
+type CreateAssetDetailsRequest struct {
+	assetSerialNo      string
+	assetModel         string
+	assetType          string
+	assetMake          string
+	assetCOO           string
+	assetMaufacture    string
+	assetStatus        string
+	createdBy          string
+	createdDate        string
+	modifiedBy         string
+	modifiedDate       string
+	palletSerialNumber string
 	cartonSerialNumber string
+	mshipmentNumber    string
+	dcShipmentNumber   string
+	mwayBillNumber     string
+	dcWayBillNumber    string
+	ewWayBillNumber    string
+	mShipmentDate      string
+	dcShipmentDate     string
+	mWayBillDate       string
+	dcWayBillDate      string
+	ewWayBillDate      string
+}
+type CreateAssetDetailsResponse struct {
+	Err     string `json:"err"`
+	ErrMsg  string `json:"errMsg"`
+	Message string `json:"message"`
+}
+type CartonDetails struct {
+	cartonSerialNo     string
 	cartonModel        string
 	cartonStatus       string
 	cartonCreationDate string
@@ -101,8 +246,58 @@ type CartonDetails struct {
 	dcWayBillDate      string
 	ewWayBillDate      string
 }
-type PalletDetails struct {
+type CreateCartonDetailsRequest struct {
+	cartonSerialNo     string
+	cartonModel        string
+	cartonStatus       string
+	cartonCreationDate string
 	palletSerialNumber string
+	assetsSerialNumber []string
+	bnmshipmentNumber  string
+	dcShipmentNumber   string
+	mwayBillNumber     string
+	dcWayBillNumber    string
+	ewWayBillNumber    string
+	dimensions         string
+	weight             string
+	mShipmentDate      string
+	dcShipmentDate     string
+	mWayBillDate       string
+	dcWayBillDate      string
+	ewWayBillDate      string
+}
+type CreateCartonDetailsResponse struct {
+	Err     string `json:"err"`
+	ErrMsg  string `json:"errMsg"`
+	Message string `json:"message"`
+}
+type PalletDetails struct {
+	palletSerialNo     string
+	palletModel        string
+	palletStatus       string
+	cartonSerialNumber []string
+	palletCreationDate string
+	assetsSerialNumber []string
+	mshipmentNumber    string
+	dcShipmentNumber   string
+	mwayBillNumber     string
+	dcWayBillNumber    string
+	ewWayBillNumber    string
+	dimensions         string
+	weight             string
+	mShipmentDate      string
+	dcShipmentDate     string
+	mWayBillDate       string
+	dcWayBillDate      string
+	ewWayBillDate      string
+}
+type CreatePalletDetailsResponse struct {
+	Err     string `json:"err"`
+	ErrMsg  string `json:"errMsg"`
+	Message string `json:"message"`
+}
+type CreatePalletDetailsRequest struct {
+	palletSerialNo     string
 	palletModel        string
 	palletStatus       string
 	cartonSerialNumber []string
@@ -533,7 +728,7 @@ func CreateEntityWayBillMapping(stub shim.ChaincodeStubInterface, args []string)
 
 }
 
-/************** Update Entity WayBill Mapping Ends ************************/
+/************** Create Entity WayBill Mapping Ends ************************/
 
 /************** Update Entity WayBill Mapping Starts ************************/
 func UpdateEntityWayBillMapping(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
@@ -562,7 +757,373 @@ func UpdateEntityWayBillMapping(stub shim.ChaincodeStubInterface, args []string)
 
 }
 
-/************** Update Entity WayBill Mapping Ends ************************/
+/************** Create Assets Starts ************************/
+func CreateAssets(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	fmt.Println("Entering Create Assets ")
+
+	assetDetailsRequest := parseAssetRequest(args[0])
+
+	return processAssetDetails(stub, assetDetailsRequest)
+
+}
+func parseAssetRequest(jsondata string) CreateAssetDetailsRequest {
+	res := CreateAssetDetailsRequest{}
+	json.Unmarshal([]byte(jsondata), &res)
+	fmt.Println(res)
+	return res
+}
+func processAssetDetails(stub shim.ChaincodeStubInterface, createAssetDetailsRequest CreateAssetDetailsRequest) ([]byte, error) {
+	assetDetails := AssetDetails{}
+	assetDetails.assetSerialNo = createAssetDetailsRequest.assetSerialNo
+	assetDetails.assetModel = createAssetDetailsRequest.assetModel
+	assetDetails.assetType = createAssetDetailsRequest.assetType
+	assetDetails.assetMake = createAssetDetailsRequest.assetMake
+	assetDetails.assetCOO = createAssetDetailsRequest.assetCOO
+	assetDetails.assetMaufacture = createAssetDetailsRequest.assetMaufacture
+	assetDetails.assetStatus = createAssetDetailsRequest.assetStatus
+	assetDetails.createdBy = createAssetDetailsRequest.createdBy
+	assetDetails.createdDate = createAssetDetailsRequest.createdDate
+	assetDetails.modifiedBy = createAssetDetailsRequest.modifiedBy
+	assetDetails.modifiedDate = createAssetDetailsRequest.modifiedDate
+	assetDetails.palletSerialNumber = createAssetDetailsRequest.palletSerialNumber
+	assetDetails.cartonSerialNumber = createAssetDetailsRequest.cartonSerialNumber
+	assetDetails.mshipmentNumber = createAssetDetailsRequest.mshipmentNumber
+	assetDetails.dcShipmentNumber = createAssetDetailsRequest.dcShipmentNumber
+	assetDetails.mwayBillNumber = createAssetDetailsRequest.mwayBillNumber
+	assetDetails.dcWayBillNumber = createAssetDetailsRequest.dcWayBillNumber
+	assetDetails.ewWayBillNumber = createAssetDetailsRequest.ewWayBillNumber
+	assetDetails.mShipmentDate = createAssetDetailsRequest.mShipmentDate
+	assetDetails.dcShipmentDate = createAssetDetailsRequest.dcShipmentDate
+	assetDetails.mWayBillDate = createAssetDetailsRequest.mWayBillDate
+	assetDetails.dcWayBillDate = createAssetDetailsRequest.dcWayBillDate
+	assetDetails.ewWayBillDate = createAssetDetailsRequest.ewWayBillDate
+
+	dataToStore, _ := json.Marshal(assetDetails)
+
+	err := stub.PutState(assetDetails.assetSerialNo, []byte(dataToStore))
+	if err != nil {
+		fmt.Println("Could not save Assets Details to ledger", err)
+		return nil, err
+	}
+
+	resp := CreateAssetDetailsResponse{}
+	resp.Err = "000"
+	resp.Message = assetDetails.assetSerialNo
+
+	respString, _ := json.Marshal(resp)
+
+	fmt.Println("Successfully saved Asset Details")
+	return []byte(respString), nil
+
+}
+
+/************** Create Assets Ends ************************/
+
+/************** Create Carton Starts ************************/
+func CreateCartons(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	fmt.Println("Entering Create Cortons ")
+
+	cartonDetailslRequest := parseCartonRequest(args[0])
+
+	return processCartonDetails(stub, cartonDetailslRequest)
+
+}
+func parseCartonRequest(jsondata string) CreateCartonDetailsRequest {
+	res := CreateCartonDetailsRequest{}
+	json.Unmarshal([]byte(jsondata), &res)
+	fmt.Println(res)
+	return res
+}
+func processCartonDetails(stub shim.ChaincodeStubInterface, createCartonDetailsRequest CreateCartonDetailsRequest) ([]byte, error) {
+	cartonDetails := CartonDetails{}
+	cartonDetails.cartonSerialNo = createCartonDetailsRequest.cartonSerialNo
+	cartonDetails.cartonModel = createCartonDetailsRequest.cartonModel
+	cartonDetails.cartonStatus = createCartonDetailsRequest.cartonStatus
+	cartonDetails.cartonCreationDate = createCartonDetailsRequest.cartonCreationDate
+	cartonDetails.palletSerialNumber = createCartonDetailsRequest.palletSerialNumber
+	cartonDetails.assetsSerialNumber = createCartonDetailsRequest.assetsSerialNumber
+	cartonDetails.bnmshipmentNumber = createCartonDetailsRequest.bnmshipmentNumber
+	cartonDetails.dcShipmentNumber = createCartonDetailsRequest.dcShipmentNumber
+	cartonDetails.mwayBillNumber = createCartonDetailsRequest.mwayBillNumber
+	cartonDetails.dcWayBillNumber = createCartonDetailsRequest.dcWayBillNumber
+	cartonDetails.ewWayBillNumber = createCartonDetailsRequest.ewWayBillNumber
+	cartonDetails.dimensions = createCartonDetailsRequest.dimensions
+	cartonDetails.weight = createCartonDetailsRequest.weight
+	cartonDetails.mShipmentDate = createCartonDetailsRequest.mShipmentDate
+	cartonDetails.dcShipmentDate = createCartonDetailsRequest.dcShipmentDate
+	cartonDetails.mWayBillDate = createCartonDetailsRequest.mWayBillDate
+	cartonDetails.dcWayBillDate = createCartonDetailsRequest.dcWayBillDate
+	cartonDetails.ewWayBillDate = createCartonDetailsRequest.ewWayBillDate
+	dataToStore, _ := json.Marshal(cartonDetails)
+
+	err := stub.PutState(cartonDetails.cartonSerialNo, []byte(dataToStore))
+	if err != nil {
+		fmt.Println("Could not save Carton Details to ledger", err)
+		return nil, err
+	}
+
+	resp := CreatePalletDetailsResponse{}
+	resp.Err = "000"
+	resp.Message = cartonDetails.cartonSerialNo
+
+	respString, _ := json.Marshal(resp)
+
+	fmt.Println("Successfully saved Carton Details")
+	return []byte(respString), nil
+
+}
+
+/************** Create Carton Ends ************************/
+/************** Create Pallets Starts ************************/
+func CreatePallets(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	fmt.Println("Entering Create Pallets ")
+
+	palletDetailslRequest := parsePalletRequest(args[0])
+
+	return processPalletDetails(stub, palletDetailslRequest)
+
+}
+func parsePalletRequest(jsondata string) CreatePalletDetailsRequest {
+	res := CreatePalletDetailsRequest{}
+	json.Unmarshal([]byte(jsondata), &res)
+	fmt.Println(res)
+	return res
+}
+func processPalletDetails(stub shim.ChaincodeStubInterface, createPalletDetailsRequest CreatePalletDetailsRequest) ([]byte, error) {
+	palletDetails := PalletDetails{}
+	palletDetails.palletSerialNo = createPalletDetailsRequest.palletSerialNo
+	palletDetails.palletModel = createPalletDetailsRequest.palletModel
+	palletDetails.palletStatus = createPalletDetailsRequest.palletStatus
+	palletDetails.palletCreationDate = createPalletDetailsRequest.palletCreationDate
+	palletDetails.assetsSerialNumber = createPalletDetailsRequest.assetsSerialNumber
+	palletDetails.mshipmentNumber = createPalletDetailsRequest.mshipmentNumber
+	palletDetails.dcShipmentNumber = createPalletDetailsRequest.dcShipmentNumber
+	palletDetails.mwayBillNumber = createPalletDetailsRequest.mwayBillNumber
+	palletDetails.dcWayBillNumber = createPalletDetailsRequest.dcWayBillNumber
+	palletDetails.ewWayBillNumber = createPalletDetailsRequest.ewWayBillNumber
+	palletDetails.dimensions = createPalletDetailsRequest.dimensions
+	palletDetails.weight = createPalletDetailsRequest.weight
+	palletDetails.mShipmentDate = createPalletDetailsRequest.mShipmentDate
+	palletDetails.dcShipmentDate = createPalletDetailsRequest.dcShipmentDate
+	palletDetails.mWayBillDate = createPalletDetailsRequest.mWayBillDate
+	palletDetails.dcWayBillDate = createPalletDetailsRequest.dcWayBillDate
+	palletDetails.ewWayBillDate = createPalletDetailsRequest.ewWayBillDate
+	dataToStore, _ := json.Marshal(palletDetails)
+
+	err := stub.PutState(palletDetails.palletSerialNo, []byte(dataToStore))
+	if err != nil {
+		fmt.Println("Could not save Pallet Details to ledger", err)
+		return nil, err
+	}
+
+	resp := CreatePalletDetailsResponse{}
+	resp.Err = "000"
+	resp.Message = palletDetails.palletSerialNo
+
+	respString, _ := json.Marshal(resp)
+
+	fmt.Println("Successfully saved Pallet Details")
+	return []byte(respString), nil
+
+}
+
+/************** Create Pallets Ends ************************/
+/************** View Asset Starts ************************/
+func GetAsset(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	fmt.Println("Entering GetAsset " + args[0])
+
+	assetSerialNo := args[0]
+
+	assetData, dataerr := fetchAssetDetails(stub, assetSerialNo)
+	if dataerr == nil {
+
+		dataToStore, _ := json.Marshal(assetData)
+		return []byte(dataToStore), nil
+
+	}
+
+	return nil, dataerr
+
+}
+func fetchAssetDetails(stub shim.ChaincodeStubInterface, assetSerialNo string) (AssetDetails, error) {
+	var assetDetails AssetDetails
+
+	indexByte, err := stub.GetState(assetSerialNo)
+	if err != nil {
+		fmt.Println("Could not retrive Asset Details ", err)
+		return assetDetails, err
+	}
+
+	if marshErr := json.Unmarshal(indexByte, &assetDetails); marshErr != nil {
+		fmt.Println("Could not retrieve Asset Details from ledger", marshErr)
+		return assetDetails, marshErr
+	}
+
+	return assetDetails, nil
+
+}
+
+/************** View Asset Ends ************************/
+
+/************** View Pallet Starts ************************/
+func GetPallet(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	fmt.Println("Entering GetPallet " + args[0])
+
+	palletSerialNo := args[0]
+
+	palletData, dataerr := fetchPalletDetails(stub, palletSerialNo)
+	if dataerr == nil {
+
+		dataToStore, _ := json.Marshal(palletData)
+		return []byte(dataToStore), nil
+
+	}
+
+	return nil, dataerr
+
+}
+func fetchPalletDetails(stub shim.ChaincodeStubInterface, palletSerialNo string) (PalletDetails, error) {
+	var palletDetails PalletDetails
+
+	indexByte, err := stub.GetState(palletSerialNo)
+	if err != nil {
+		fmt.Println("Could not retrive Pallet Details ", err)
+		return palletDetails, err
+	}
+
+	if marshErr := json.Unmarshal(indexByte, &palletDetails); marshErr != nil {
+		fmt.Println("Could not retrieve Pallet Details from ledger", marshErr)
+		return palletDetails, marshErr
+	}
+
+	return palletDetails, nil
+
+}
+
+/************** View Pallet Ends ************************/
+
+/************** View Carton Starts ************************/
+func GetCarton(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	fmt.Println("Entering GetPallet " + args[0])
+
+	cartonSerialNo := args[0]
+
+	cartonData, dataerr := fetchCartonDetails(stub, cartonSerialNo)
+	if dataerr == nil {
+
+		dataToStore, _ := json.Marshal(cartonData)
+		return []byte(dataToStore), nil
+
+	}
+
+	return nil, dataerr
+
+}
+func fetchCartonDetails(stub shim.ChaincodeStubInterface, cartonSerialNo string) (CartonDetails, error) {
+	var cartonDetails CartonDetails
+
+	indexByte, err := stub.GetState(cartonSerialNo)
+	if err != nil {
+		fmt.Println("Could not retrive Carton Details ", err)
+		return cartonDetails, err
+	}
+
+	if marshErr := json.Unmarshal(indexByte, &cartonDetails); marshErr != nil {
+		fmt.Println("Could not retrieve Carton Details from ledger", marshErr)
+		return cartonDetails, marshErr
+	}
+
+	return cartonDetails, nil
+
+}
+
+/************** View Carton Ends ************************/
+
+/***********
+/************** Update Asset Details Starts ************************/
+func UpdateAssetDetails(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	fmt.Println("Entering Update Asset Details")
+	assetSerialNo := args[0]
+	wayBillNumber := args[1]
+	assetDetails, _ := fetchAssetDetails(stub, assetSerialNo)
+
+	assetDetails.ewWayBillNumber = wayBillNumber
+
+	fmt.Println("Updated Entity", assetDetails)
+	dataToStore, _ := json.Marshal(assetDetails)
+	err := stub.PutState(assetSerialNo, []byte(dataToStore))
+	if err != nil {
+		fmt.Println("Could not save Entity WayBill Mapping to ledger", err)
+		return nil, err
+	}
+
+	resp := CreateAssetDetailsResponse{}
+	resp.Err = "000"
+	resp.Message = assetSerialNo
+
+	respString, _ := json.Marshal(resp)
+
+	fmt.Println("Successfully saved Entity WayBill Mapping")
+	return []byte(respString), nil
+
+}
+
+/************** Update Asset Details Ends ************************/
+
+/************** Update Carton Details Starts ************************/
+func UpdateCartonDetails(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	fmt.Println("Entering Update Carton Details")
+	cartonSerialNo := args[0]
+	wayBillNumber := args[1]
+	cartonDetails, _ := fetchCartonDetails(stub, cartonSerialNo)
+	cartonDetails.mwayBillNumber = wayBillNumber
+	fmt.Println("Updated Entity", cartonDetails)
+	dataToStore, _ := json.Marshal(cartonDetails)
+	err := stub.PutState(cartonSerialNo, []byte(dataToStore))
+	if err != nil {
+		fmt.Println("Could not save Pallet Details to ledger", err)
+		return nil, err
+	}
+
+	resp := CreateCartonDetailsResponse{}
+	resp.Err = "000"
+	resp.Message = cartonSerialNo
+
+	respString, _ := json.Marshal(resp)
+
+	fmt.Println("Successfully saved Carton Details")
+	return []byte(respString), nil
+}
+
+/************** Update Carton Details Ends ************************/
+
+/************** Update Pallet Details Starts ************************/
+func UpdatePalletDetails(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	fmt.Println("Entering Update Pallet Details")
+	palletSerialNo := args[0]
+	wayBillNumber := args[1]
+	palletDetails, _ := fetchPalletDetails(stub, palletSerialNo)
+	palletDetails.mwayBillNumber = wayBillNumber
+	fmt.Println("Updated Entity", palletDetails)
+	dataToStore, _ := json.Marshal(palletDetails)
+	err := stub.PutState(palletSerialNo, []byte(dataToStore))
+	if err != nil {
+		fmt.Println("Could not save Pallet Details to ledger", err)
+		return nil, err
+	}
+
+	resp := CreatePalletDetailsResponse{}
+	resp.Err = "000"
+	resp.Message = palletSerialNo
+
+	respString, _ := json.Marshal(resp)
+
+	fmt.Println("Successfully saved Pallet Details")
+	return []byte(respString), nil
+
+}
+
+/************** Update Pallet Details Ends ************************/
 
 /************** Get Entity WayBill Mapping Starts ************************/
 func GetEntityWayBillMapping(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
@@ -601,59 +1162,195 @@ func fetchEntityWayBillMappingData(stub shim.ChaincodeStubInterface, entityName 
 
 /**************Arshad End new code as per LLD****************/
 
-type WayBillHistory struct {
-	Name      string  `json:"name"`
-	Address   string  `json:"address"`
-	Status    string  `json:"status"`
-	Timestamp string  `json:"timestamp"`
-	Notes     string  `json:"notes"`
-	Lat       float64 `json:"lat"`
-	Log       float64 `json:"log"`
+func ShipmentPageLoad(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	fmt.Println("Entering ShipmentPageLoad New " + args[0])
+
+	var err error
+	var allEntities AllEntities
+
+	var tmpEntity Entity
+
+	var consignerDetails ConsignerShipmentPageLoadResponse
+	var consigneeArr []ConsigneeShipmentPageLoadResponse
+	var carrier []string
+	var response ShipmentPageLoadResponse
+	var assetModelDetails AssetModelDetails
+
+	request := parseShipmentPageLoadRequest(args[0])
+
+	allEntities, err = fetchAllEntities(stub)
+	if err != nil {
+		return nil, err
+	}
+
+	lenOfArray := len(allEntities.EntityArr)
+
+	for i := 0; i < lenOfArray; i++ {
+		tmpEntity, err = fetchEntities(stub, allEntities.EntityArr[i])
+		if err == nil {
+			fmt.Println("tmpEntity.Name == " + tmpEntity.EntityName)
+			fmt.Println("request.CallingEntityName ==  " + request.CallingEntityName)
+			if tmpEntity.EntityName == request.CallingEntityName {
+				consignerDetails.ConsignerId = tmpEntity.EntityId
+				consignerDetails.ConsignerName = tmpEntity.EntityName
+				consignerDetails.ConsignerAddress = tmpEntity.EntityAddress
+				consignerDetails.ConsignerRegNumber = tmpEntity.EntityRegNumber
+
+			}
+		}
+	}
+
+	assetModelDetails, err = fetchAssetModelName(stub)
+	fmt.Println("consignerDetails.Id == " + consignerDetails.ConsignerId)
+	if consignerDetails.ConsignerId != "" {
+		consigneeArr, carrier, err = fetchCorrespondingConsignees(stub, consignerDetails.ConsignerId)
+		response.CallingEntityName = request.CallingEntityName
+		response.Consigner = consignerDetails
+		response.Consignee = consigneeArr
+		response.Carrier = carrier
+		response.ModelNames = assetModelDetails.ModelNames
+	}
+
+	fmt.Println(response)
+	fmt.Println("Exiting ShipmentPageLoad ")
+
+	return json.Marshal(response)
+
+	//return nil,nil
+
 }
 
-type Shipment struct {
-	ShipmentNumber        string           `json:"shipmentNumber"`
-	WayBillNo             string           `json:"wayBillNo"`
-	WayBillType           string           `json:"wayBillType"`
-	PersonConsigningGoods string           `json:"personConsigningGoods"`
-	Consigner             string           `json:"consigner"`
-	ConsignerAddress      string           `json:"consignerAddress"`
-	Consignee             string           `json:"consignee"`
-	ConsigneeAddress      string           `json:"consigneeAddress"`
-	ConsigneeRegNo        string           `json:"consigneeRegNo"`
-	Quantity              string           `json:"quantity"`
-	Pallets               []string         `json:"pallets"`
-	Cartons               []string         `json:"cartons"`
-	Status                string           `json:"status"`
-	ModelNo               string           `json:"modelNo"`
-	VehicleNumber         string           `json:"vehicleNumber"`
-	VehicleType           string           `json:"vehicleType"`
-	PickUpTime            string           `json:"pickUpTime"`
-	ValueOfGoods          string           `json:"valueOfGoods"`
-	ContainerId           string           `json:"containerId"`
-	MasterWayBillRef      []string         `json:"masterWayBillRef"`
-	WayBillHistorys       []WayBillHistory `json:"wayBillHistorys"`
-	Carrier               string           `json:"carrier"`
-	Acl                   []string         `json:"acl"`
-	CreatedBy             string           `json:"createdBy"`
-	Custodian             string           `json:"custodian"`
-	CreatedTimeStamp      string           `json:"createdTimeStamp"`
-	UpdatedTimeStamp      string           `json:"updatedTimeStamp"`
+func fetchCorrespondingConsignees(stub shim.ChaincodeStubInterface, fromEntityID string) ([]ConsigneeShipmentPageLoadResponse, []string, error) {
+	fmt.Println("Entering fetchCorrespondingConsignees " + fromEntityID)
+	var workflows AllWorkflows
+	var err error
+
+	var consigneeArr []ConsigneeShipmentPageLoadResponse
+	var carrier []string
+
+	workflows, err = fetchWorkflows(stub)
+
+	if err == nil {
+		lenOfArray := len(workflows.Workflows)
+		for i := 0; i < lenOfArray; i++ {
+			if fromEntityID == workflows.Workflows[i].FromEntity {
+				var tmpEntity Entity
+				var tmpConsignee ConsigneeShipmentPageLoadResponse
+				tmpEntity, err = fetchEntities(stub, workflows.Workflows[i].ToEntity)
+				if err == nil {
+					tmpConsignee.ConsigneeId = tmpEntity.EntityId
+					tmpConsignee.ConsigneeName = tmpEntity.EntityName
+					tmpConsignee.ConsigneeAddress = tmpEntity.EntityAddress
+					tmpConsignee.ConsigneeCountry = tmpEntity.EntityCountry
+
+					consigneeArr = append(consigneeArr, tmpConsignee)
+					carrier = append(carrier, workflows.Workflows[i].Carrier)
+				}
+			}
+		}
+	} else {
+		fmt.Println("Error while fetching workflow data", err)
+		return consigneeArr, carrier, err
+	}
+	fmt.Println(consigneeArr)
+	fmt.Println("Exiting fetchCorrespondingConsignees ")
+
+	return consigneeArr, carrier, nil
+
 }
 
-type ShipmentIndex struct {
-	ShipmentNumber string
-	Status         string
-	Acl            []string
+func fetchAssetModelName(stub shim.ChaincodeStubInterface) (AssetModelDetails, error) {
+	fmt.Println("Entering fetchAssetModelName ")
+	var modelnames AssetModelDetails
+
+	indexByte, err := stub.GetState("ASSET_MODEL_NAMES")
+	if err != nil {
+		fmt.Println("Could not retrive Shipment Index", err)
+		return modelnames, err
+	}
+
+	if marshErr := json.Unmarshal(indexByte, &modelnames); marshErr != nil {
+		fmt.Println("Could not save Shipment to ledger", marshErr)
+		return modelnames, marshErr
+	}
+	fmt.Println(modelnames)
+	fmt.Println("Exiting fetchAssetModelName ")
+	return modelnames, nil
+
 }
 
-type AllShipment struct {
-	ShipmentIndexArr []ShipmentIndex
+func fetchWorkflows(stub shim.ChaincodeStubInterface) (AllWorkflows, error) {
+	fmt.Println("Entering fetchWorkflows ")
+	var workflows AllWorkflows
+
+	indexByte, err := stub.GetState("ALL_WORKFLOWS")
+	if err != nil {
+		fmt.Println("Could not retrive Shipment Index", err)
+		return workflows, err
+	}
+
+	if marshErr := json.Unmarshal(indexByte, &workflows); marshErr != nil {
+		fmt.Println("Could not save Shipment to ledger", marshErr)
+		return workflows, marshErr
+	}
+	fmt.Println(workflows)
+	fmt.Println("Exiting fetchWorkflows ")
+	return workflows, nil
+
 }
 
-type AllShipmentDump struct {
-	ShipmentIndexArr []string `json:"shipmentIndexArr"`
+func fetchEntities(stub shim.ChaincodeStubInterface, entityID string) (Entity, error) {
+	fmt.Println("Entering fetchEntities " + entityID)
+	var entities Entity
+
+	indexByte, err := stub.GetState(entityID)
+	if err != nil {
+		fmt.Println("Could not retrive Shipment Index", err)
+		return entities, err
+	}
+	fmt.Println("entities Bytes :  " + string(indexByte))
+
+	if marshErr := json.Unmarshal(indexByte, &entities); marshErr != nil {
+		fmt.Println("Could not save Shipment to ledger", marshErr)
+		return entities, marshErr
+	}
+
+	fmt.Println(entities)
+	fmt.Println("Exiting fetchEntities ")
+	return entities, nil
+
 }
+
+func fetchAllEntities(stub shim.ChaincodeStubInterface) (AllEntities, error) {
+	fmt.Println("Entering fetchAllEntities ")
+	var allEntities AllEntities
+
+	indexByte, err := stub.GetState("ALL_ENTITIES")
+	if err != nil {
+		fmt.Println("Could not retrive Shipment Index", err)
+		return allEntities, err
+	}
+
+	if marshErr := json.Unmarshal(indexByte, &allEntities); marshErr != nil {
+		fmt.Println("Could not save Shipment to ledger", marshErr)
+		return allEntities, marshErr
+	}
+	fmt.Println(allEntities)
+	fmt.Println("Exiting fetchAllEntities ")
+	return allEntities, nil
+
+}
+
+func parseShipmentPageLoadRequest(jsondata string) ShipmentPageLoadRequest {
+	fmt.Println("Entering parseShipmentPageLoadRequest ")
+	res := ShipmentPageLoadRequest{}
+	json.Unmarshal([]byte(jsondata), &res)
+	fmt.Println(res)
+	fmt.Println("Exiting parseShipmentPageLoadRequest ")
+	return res
+}
+
+/************** ShipmentPageLoad Ends    ************************/
 
 /************** Create Shipment Starts ************************/
 /**
@@ -732,7 +1429,7 @@ func processShipment(stub shim.ChaincodeStubInterface, shipmentRequest CreateShi
 	shipment.Status = "Created"
 
 	var acl []string
-	acl = append(acl, shipmentRequest.CallingEntityName)
+	acl = append(acl, shipmentRequest.CallingEntityName) //TODO: Have to take the Entity name from the Certificate
 	shipment.Acl = acl
 
 	shipmentIndex.ShipmentNumber = shipmentRequest.ShipmentNumber
@@ -1378,12 +2075,17 @@ func (t *B4SCChaincode) Invoke(stub shim.ChaincodeStubInterface, function string
 		return CreateEWWayBill(stub, args)
 	} else if function == "CreateEntityWayBillMapping" {
 		return CreateEntityWayBillMapping(stub, args)
+	} else if function == "CreateAssets" {
+		return CreateAssets(stub, args)
+	} else if function == "CreateCartons" {
+		return CreateCartons(stub, args)
+	} else if function == "CreatePallets" {
+		return CreatePallets(stub, args)
 	} else if function == "UpdateEntityWayBillMapping" {
 		return UpdateEntityWayBillMapping(stub, args)
 	} else {
 		return nil, errors.New("Invalid function name " + function)
 	}
-
 	//return nil, nil
 }
 
@@ -1403,15 +2105,23 @@ func (t *B4SCChaincode) Query(stub shim.ChaincodeStubInterface, function string,
 		return SearchPallet(stub, args)
 	} else if function == "SearchDateRange" {
 		return SearchDateRange(stub, args)
-	} else if function == "ViewWayBill" {
-		return ViewWayBill(stub, args)
+	} else if function == "ShipmentPageLoad" {
+		return ShipmentPageLoad(stub, args)
+	} else if function == "ViewEWWayBill" {
+		return ViewEWWayBill(stub, args)
 	} else if function == "ViewEWWayBill" {
 		return ViewEWWayBill(stub, args)
 	} else if function == "GetEntityWayBillMapping" {
 		return GetEntityWayBillMapping(stub, args)
-	} else {
-		return nil, errors.New("Invalid function name " + function)
+	} else if function == "GetAsset" {
+		return GetAsset(stub, args)
+	} else if function == "GetPallet" {
+		return GetPallet(stub, args)
+	} else if function == "GetCarton" {
+		return GetCarton(stub, args)
 	}
+	return nil, errors.New("Invalid function name " + function)
+
 }
 
 func main() {
