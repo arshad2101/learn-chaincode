@@ -233,7 +233,7 @@ type CartonDetails struct {
 	CartonCreationDate string
 	PalletSerialNumber string
 	AssetsSerialNumber []string
-	BnmshipmentNumber  string
+	MshipmentNumber    string
 	DcShipmentNumber   string
 	MwayBillNumber     string
 	DcWayBillNumber    string
@@ -253,7 +253,7 @@ type CreateCartonDetailsRequest struct {
 	CartonCreationDate string
 	PalletSerialNumber string
 	AssetsSerialNumber []string
-	BnmshipmentNumber  string
+	MshipmentNumber    string
 	DcShipmentNumber   string
 	MwayBillNumber     string
 	DcWayBillNumber    string
@@ -758,7 +758,7 @@ func UpdateEntityWayBillMapping(stub shim.ChaincodeStubInterface, args []string)
 }
 
 /************** Create Assets Starts ************************/
-func CreateAssets(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+func CreateAsset(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	fmt.Println("Entering Create Assets ")
 
 	assetDetailsRequest := parseAssetRequest(args[0])
@@ -820,7 +820,7 @@ func processAssetDetails(stub shim.ChaincodeStubInterface, createAssetDetailsReq
 /************** Create Assets Ends ************************/
 
 /************** Create Carton Starts ************************/
-func CreateCartons(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+func CreateCarton(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	fmt.Println("Entering Create Cortons ")
 
 	cartonDetailslRequest := parseCartonRequest(args[0])
@@ -842,7 +842,7 @@ func processCartonDetails(stub shim.ChaincodeStubInterface, createCartonDetailsR
 	cartonDetails.CartonCreationDate = createCartonDetailsRequest.CartonCreationDate
 	cartonDetails.PalletSerialNumber = createCartonDetailsRequest.PalletSerialNumber
 	cartonDetails.AssetsSerialNumber = createCartonDetailsRequest.AssetsSerialNumber
-	cartonDetails.BnmshipmentNumber = createCartonDetailsRequest.BnmshipmentNumber
+	cartonDetails.MshipmentNumber = createCartonDetailsRequest.MshipmentNumber
 	cartonDetails.DcShipmentNumber = createCartonDetailsRequest.DcShipmentNumber
 	cartonDetails.MwayBillNumber = createCartonDetailsRequest.MwayBillNumber
 	cartonDetails.DcWayBillNumber = createCartonDetailsRequest.DcWayBillNumber
@@ -875,7 +875,7 @@ func processCartonDetails(stub shim.ChaincodeStubInterface, createCartonDetailsR
 
 /************** Create Carton Ends ************************/
 /************** Create Pallets Starts ************************/
-func CreatePallets(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+func CreatePallet(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	fmt.Println("Entering Create Pallets ")
 
 	palletDetailslRequest := parsePalletRequest(args[0])
@@ -894,6 +894,7 @@ func processPalletDetails(stub shim.ChaincodeStubInterface, createPalletDetailsR
 	palletDetails.PalletSerialNo = createPalletDetailsRequest.PalletSerialNo
 	palletDetails.PalletModel = createPalletDetailsRequest.PalletModel
 	palletDetails.PalletStatus = createPalletDetailsRequest.PalletStatus
+	palletDetails.CartonSerialNumber = createPalletDetailsRequest.CartonSerialNumber
 	palletDetails.PalletCreationDate = createPalletDetailsRequest.PalletCreationDate
 	palletDetails.AssetsSerialNumber = createPalletDetailsRequest.AssetsSerialNumber
 	palletDetails.MshipmentNumber = createPalletDetailsRequest.MshipmentNumber
@@ -965,6 +966,42 @@ func fetchAssetDetails(stub shim.ChaincodeStubInterface, assetSerialNo string) (
 
 /************** View Asset Ends ************************/
 
+/************** View Carton Starts ************************/
+func GetCarton(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	fmt.Println("Entering GetPallet " + args[0])
+
+	cartonSerialNo := args[0]
+
+	cartonData, dataerr := fetchCartonDetails(stub, cartonSerialNo)
+	if dataerr == nil {
+
+		dataToStore, _ := json.Marshal(cartonData)
+		return []byte(dataToStore), nil
+
+	}
+
+	return nil, dataerr
+
+}
+func fetchCartonDetails(stub shim.ChaincodeStubInterface, cartonSerialNo string) (CartonDetails, error) {
+	var cartonDetails CartonDetails
+
+	indexByte, err := stub.GetState(cartonSerialNo)
+	if err != nil {
+		fmt.Println("Could not retrive Carton Details ", err)
+		return cartonDetails, err
+	}
+
+	if marshErr := json.Unmarshal(indexByte, &cartonDetails); marshErr != nil {
+		fmt.Println("Could not retrieve Carton Details from ledger", marshErr)
+		return cartonDetails, marshErr
+	}
+
+	return cartonDetails, nil
+
+}
+
+/************** View Carton Ends ************************/
 /************** View Pallet Starts ************************/
 func GetPallet(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	fmt.Println("Entering GetPallet " + args[0])
@@ -1002,44 +1039,6 @@ func fetchPalletDetails(stub shim.ChaincodeStubInterface, palletSerialNo string)
 
 /************** View Pallet Ends ************************/
 
-/************** View Carton Starts ************************/
-func GetCarton(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
-	fmt.Println("Entering GetPallet " + args[0])
-
-	cartonSerialNo := args[0]
-
-	cartonData, dataerr := fetchCartonDetails(stub, cartonSerialNo)
-	if dataerr == nil {
-
-		dataToStore, _ := json.Marshal(cartonData)
-		return []byte(dataToStore), nil
-
-	}
-
-	return nil, dataerr
-
-}
-func fetchCartonDetails(stub shim.ChaincodeStubInterface, cartonSerialNo string) (CartonDetails, error) {
-	var cartonDetails CartonDetails
-
-	indexByte, err := stub.GetState(cartonSerialNo)
-	if err != nil {
-		fmt.Println("Could not retrive Carton Details ", err)
-		return cartonDetails, err
-	}
-
-	if marshErr := json.Unmarshal(indexByte, &cartonDetails); marshErr != nil {
-		fmt.Println("Could not retrieve Carton Details from ledger", marshErr)
-		return cartonDetails, marshErr
-	}
-
-	return cartonDetails, nil
-
-}
-
-/************** View Carton Ends ************************/
-
-/***********
 /************** Update Asset Details Starts ************************/
 func UpdateAssetDetails(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	fmt.Println("Entering Update Asset Details")
@@ -2075,12 +2074,12 @@ func (t *B4SCChaincode) Invoke(stub shim.ChaincodeStubInterface, function string
 		return CreateEWWayBill(stub, args)
 	} else if function == "CreateEntityWayBillMapping" {
 		return CreateEntityWayBillMapping(stub, args)
-	} else if function == "CreateAssets" {
-		return CreateAssets(stub, args)
-	} else if function == "CreateCartons" {
-		return CreateCartons(stub, args)
-	} else if function == "CreatePallets" {
-		return CreatePallets(stub, args)
+	} else if function == "CreateAsset" {
+		return CreateAsset(stub, args)
+	} else if function == "CreateCarton" {
+		return CreateCarton(stub, args)
+	} else if function == "CreatePallet" {
+		return CreatePallet(stub, args)
 	} else if function == "UpdateEntityWayBillMapping" {
 		return UpdateEntityWayBillMapping(stub, args)
 	} else {
