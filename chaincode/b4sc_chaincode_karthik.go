@@ -172,54 +172,54 @@ type ShipmentPageLoadResponse struct {
 are not touched as of now to avoid break of any functionality devloped by Kartik 20/3/2017***************/
 
 type AssetDetails struct {
-	assetSerialNo      string
-	assetModel         string
-	assetType          string
-	assetMake          string
-	assetCOO           string
-	assetMaufacture    string
-	assetStatus        string
-	createdBy          string
-	createdDate        string
-	modifiedBy         string
-	modifiedDate       string
-	palletSerialNumber string
-	cartonSerialNumber string
-	mshipmentNumber    string
-	dcShipmentNumber   string
-	mwayBillNumber     string
-	dcWayBillNumber    string
-	ewWayBillNumber    string
-	mShipmentDate      string
-	dcShipmentDate     string
-	mWayBillDate       string
-	dcWayBillDate      string
-	ewWayBillDate      string
+	AssetSerialNo      string
+	AssetModel         string
+	AssetType          string
+	AssetMake          string
+	AssetCOO           string
+	AssetMaufacture    string
+	AssetStatus        string
+	CreatedBy          string
+	CreatedDate        string
+	ModifiedBy         string
+	ModifiedDate       string
+	PalletSerialNumber string
+	CartonSerialNumber string
+	MshipmentNumber    string
+	DcShipmentNumber   string
+	MwayBillNumber     string
+	DcWayBillNumber    string
+	EwWayBillNumber    string
+	MShipmentDate      string
+	DcShipmentDate     string
+	MWayBillDate       string
+	DcWayBillDate      string
+	EwWayBillDate      string
 }
 type CreateAssetDetailsRequest struct {
-	assetSerialNo      string
-	assetModel         string
-	assetType          string
-	assetMake          string
-	assetCOO           string
-	assetMaufacture    string
-	assetStatus        string
-	createdBy          string
-	createdDate        string
-	modifiedBy         string
-	modifiedDate       string
-	palletSerialNumber string
-	cartonSerialNumber string
-	mshipmentNumber    string
-	dcShipmentNumber   string
-	mwayBillNumber     string
-	dcWayBillNumber    string
-	ewWayBillNumber    string
-	mShipmentDate      string
-	dcShipmentDate     string
-	mWayBillDate       string
-	dcWayBillDate      string
-	ewWayBillDate      string
+	AssetSerialNo      string
+	AssetModel         string
+	AssetType          string
+	AssetMake          string
+	AssetCOO           string
+	AssetMaufacture    string
+	AssetStatus        string
+	CreatedBy          string
+	CreatedDate        string
+	ModifiedBy         string
+	ModifiedDate       string
+	PalletSerialNumber string
+	CartonSerialNumber string
+	MshipmentNumber    string
+	DcShipmentNumber   string
+	MwayBillNumber     string
+	DcWayBillNumber    string
+	EwWayBillNumber    string
+	MShipmentDate      string
+	DcShipmentDate     string
+	MWayBillDate       string
+	DcWayBillDate      string
+	EwWayBillDate      string
 }
 type CreateAssetDetailsResponse struct {
 	Err     string `json:"err"`
@@ -227,44 +227,44 @@ type CreateAssetDetailsResponse struct {
 	Message string `json:"message"`
 }
 type CartonDetails struct {
-	cartonSerialNo     string
-	cartonModel        string
-	cartonStatus       string
-	cartonCreationDate string
-	palletSerialNumber string
-	assetsSerialNumber []string
-	bnmshipmentNumber  string
-	dcShipmentNumber   string
-	mwayBillNumber     string
-	dcWayBillNumber    string
-	ewWayBillNumber    string
-	dimensions         string
-	weight             string
-	mShipmentDate      string
-	dcShipmentDate     string
-	mWayBillDate       string
-	dcWayBillDate      string
-	ewWayBillDate      string
+	CartonSerialNo     string
+	CartonModel        string
+	CartonStatus       string
+	CartonCreationDate string
+	PalletSerialNumber string
+	AssetsSerialNumber []string
+	BnmshipmentNumber  string
+	DcShipmentNumber   string
+	MwayBillNumber     string
+	DcWayBillNumber    string
+	EwWayBillNumber    string
+	Dimensions         string
+	Weight             string
+	MShipmentDate      string
+	DcShipmentDate     string
+	MWayBillDate       string
+	DcWayBillDate      string
+	EwWayBillDate      string
 }
 type CreateCartonDetailsRequest struct {
-	cartonSerialNo     string
-	cartonModel        string
-	cartonStatus       string
-	cartonCreationDate string
-	palletSerialNumber string
-	assetsSerialNumber []string
-	bnmshipmentNumber  string
-	dcShipmentNumber   string
-	mwayBillNumber     string
-	dcWayBillNumber    string
-	ewWayBillNumber    string
-	dimensions         string
-	weight             string
-	mShipmentDate      string
-	dcShipmentDate     string
-	mWayBillDate       string
-	dcWayBillDate      string
-	ewWayBillDate      string
+	CartonSerialNo     string
+	CartonModel        string
+	CartonStatus       string
+	CartonCreationDate string
+	PalletSerialNumber string
+	AssetsSerialNumber []string
+	BnmshipmentNumber  string
+	DcShipmentNumber   string
+	MwayBillNumber     string
+	DcWayBillNumber    string
+	EwWayBillNumber    string
+	Dimensions         string
+	Weight             string
+	MShipmentDate      string
+	DcShipmentDate     string
+	MWayBillDate       string
+	DcWayBillDate      string
+	EwWayBillDate      string
 }
 type CreateCartonDetailsResponse struct {
 	Err     string `json:"err"`
@@ -272,24 +272,24 @@ type CreateCartonDetailsResponse struct {
 	Message string `json:"message"`
 }
 type PalletDetails struct {
-	palletSerialNo     string
-	palletModel        string
-	palletStatus       string
-	cartonSerialNumber []string
-	palletCreationDate string
-	assetsSerialNumber []string
-	mshipmentNumber    string
-	dcShipmentNumber   string
-	mwayBillNumber     string
-	dcWayBillNumber    string
-	ewWayBillNumber    string
-	dimensions         string
-	weight             string
-	mShipmentDate      string
-	dcShipmentDate     string
-	mWayBillDate       string
-	dcWayBillDate      string
-	ewWayBillDate      string
+	PalletSerialNo     string
+	PalletModel        string
+	PalletStatus       string
+	CartonSerialNumber []string
+	PalletCreationDate string
+	AssetsSerialNumber []string
+	MshipmentNumber    string
+	DcShipmentNumber   string
+	MwayBillNumber     string
+	DcWayBillNumber    string
+	EwWayBillNumber    string
+	Dimensions         string
+	Weight             string
+	MShipmentDate      string
+	DcShipmentDate     string
+	MWayBillDate       string
+	DcWayBillDate      string
+	EwWayBillDate      string
 }
 type CreatePalletDetailsResponse struct {
 	Err     string `json:"err"`
@@ -297,24 +297,24 @@ type CreatePalletDetailsResponse struct {
 	Message string `json:"message"`
 }
 type CreatePalletDetailsRequest struct {
-	palletSerialNo     string
-	palletModel        string
-	palletStatus       string
-	cartonSerialNumber []string
-	palletCreationDate string
-	assetsSerialNumber []string
-	mshipmentNumber    string
-	dcShipmentNumber   string
-	mwayBillNumber     string
-	dcWayBillNumber    string
-	ewWayBillNumber    string
-	dimensions         string
-	weight             string
-	mShipmentDate      string
-	dcShipmentDate     string
-	mWayBillDate       string
-	dcWayBillDate      string
-	ewWayBillDate      string
+	PalletSerialNo     string
+	PalletModel        string
+	PalletStatus       string
+	CartonSerialNumber []string
+	PalletCreationDate string
+	AssetsSerialNumber []string
+	MshipmentNumber    string
+	DcShipmentNumber   string
+	MwayBillNumber     string
+	DcWayBillNumber    string
+	EwWayBillNumber    string
+	Dimensions         string
+	Weight             string
+	MShipmentDate      string
+	DcShipmentDate     string
+	MWayBillDate       string
+	DcWayBillDate      string
+	EwWayBillDate      string
 }
 type WayBill struct {
 	WayBillNumber         string
@@ -774,33 +774,33 @@ func parseAssetRequest(jsondata string) CreateAssetDetailsRequest {
 }
 func processAssetDetails(stub shim.ChaincodeStubInterface, createAssetDetailsRequest CreateAssetDetailsRequest) ([]byte, error) {
 	assetDetails := AssetDetails{}
-	assetDetails.assetSerialNo = createAssetDetailsRequest.assetSerialNo
-	assetDetails.assetModel = createAssetDetailsRequest.assetModel
-	assetDetails.assetType = createAssetDetailsRequest.assetType
-	assetDetails.assetMake = createAssetDetailsRequest.assetMake
-	assetDetails.assetCOO = createAssetDetailsRequest.assetCOO
-	assetDetails.assetMaufacture = createAssetDetailsRequest.assetMaufacture
-	assetDetails.assetStatus = createAssetDetailsRequest.assetStatus
-	assetDetails.createdBy = createAssetDetailsRequest.createdBy
-	assetDetails.createdDate = createAssetDetailsRequest.createdDate
-	assetDetails.modifiedBy = createAssetDetailsRequest.modifiedBy
-	assetDetails.modifiedDate = createAssetDetailsRequest.modifiedDate
-	assetDetails.palletSerialNumber = createAssetDetailsRequest.palletSerialNumber
-	assetDetails.cartonSerialNumber = createAssetDetailsRequest.cartonSerialNumber
-	assetDetails.mshipmentNumber = createAssetDetailsRequest.mshipmentNumber
-	assetDetails.dcShipmentNumber = createAssetDetailsRequest.dcShipmentNumber
-	assetDetails.mwayBillNumber = createAssetDetailsRequest.mwayBillNumber
-	assetDetails.dcWayBillNumber = createAssetDetailsRequest.dcWayBillNumber
-	assetDetails.ewWayBillNumber = createAssetDetailsRequest.ewWayBillNumber
-	assetDetails.mShipmentDate = createAssetDetailsRequest.mShipmentDate
-	assetDetails.dcShipmentDate = createAssetDetailsRequest.dcShipmentDate
-	assetDetails.mWayBillDate = createAssetDetailsRequest.mWayBillDate
-	assetDetails.dcWayBillDate = createAssetDetailsRequest.dcWayBillDate
-	assetDetails.ewWayBillDate = createAssetDetailsRequest.ewWayBillDate
+	assetDetails.AssetSerialNo = createAssetDetailsRequest.AssetSerialNo
+	assetDetails.AssetModel = createAssetDetailsRequest.AssetModel
+	assetDetails.AssetType = createAssetDetailsRequest.AssetType
+	assetDetails.AssetMake = createAssetDetailsRequest.AssetMake
+	assetDetails.AssetCOO = createAssetDetailsRequest.AssetCOO
+	assetDetails.AssetMaufacture = createAssetDetailsRequest.AssetMaufacture
+	assetDetails.AssetStatus = createAssetDetailsRequest.AssetStatus
+	assetDetails.CreatedBy = createAssetDetailsRequest.CreatedBy
+	assetDetails.CreatedDate = createAssetDetailsRequest.CreatedDate
+	assetDetails.ModifiedBy = createAssetDetailsRequest.ModifiedBy
+	assetDetails.ModifiedDate = createAssetDetailsRequest.ModifiedDate
+	assetDetails.PalletSerialNumber = createAssetDetailsRequest.PalletSerialNumber
+	assetDetails.CartonSerialNumber = createAssetDetailsRequest.CartonSerialNumber
+	assetDetails.MshipmentNumber = createAssetDetailsRequest.MshipmentNumber
+	assetDetails.DcShipmentNumber = createAssetDetailsRequest.DcShipmentNumber
+	assetDetails.MwayBillNumber = createAssetDetailsRequest.MwayBillNumber
+	assetDetails.DcWayBillNumber = createAssetDetailsRequest.DcWayBillNumber
+	assetDetails.EwWayBillNumber = createAssetDetailsRequest.EwWayBillNumber
+	assetDetails.MShipmentDate = createAssetDetailsRequest.MShipmentDate
+	assetDetails.DcShipmentDate = createAssetDetailsRequest.DcShipmentDate
+	assetDetails.MWayBillDate = createAssetDetailsRequest.MWayBillDate
+	assetDetails.DcWayBillDate = createAssetDetailsRequest.DcWayBillDate
+	assetDetails.EwWayBillDate = createAssetDetailsRequest.EwWayBillDate
 
 	dataToStore, _ := json.Marshal(assetDetails)
 
-	err := stub.PutState(assetDetails.assetSerialNo, []byte(dataToStore))
+	err := stub.PutState(assetDetails.AssetSerialNo, []byte(dataToStore))
 	if err != nil {
 		fmt.Println("Could not save Assets Details to ledger", err)
 		return nil, err
@@ -808,7 +808,7 @@ func processAssetDetails(stub shim.ChaincodeStubInterface, createAssetDetailsReq
 
 	resp := CreateAssetDetailsResponse{}
 	resp.Err = "000"
-	resp.Message = assetDetails.assetSerialNo
+	resp.Message = assetDetails.AssetSerialNo
 
 	respString, _ := json.Marshal(resp)
 
@@ -836,27 +836,27 @@ func parseCartonRequest(jsondata string) CreateCartonDetailsRequest {
 }
 func processCartonDetails(stub shim.ChaincodeStubInterface, createCartonDetailsRequest CreateCartonDetailsRequest) ([]byte, error) {
 	cartonDetails := CartonDetails{}
-	cartonDetails.cartonSerialNo = createCartonDetailsRequest.cartonSerialNo
-	cartonDetails.cartonModel = createCartonDetailsRequest.cartonModel
-	cartonDetails.cartonStatus = createCartonDetailsRequest.cartonStatus
-	cartonDetails.cartonCreationDate = createCartonDetailsRequest.cartonCreationDate
-	cartonDetails.palletSerialNumber = createCartonDetailsRequest.palletSerialNumber
-	cartonDetails.assetsSerialNumber = createCartonDetailsRequest.assetsSerialNumber
-	cartonDetails.bnmshipmentNumber = createCartonDetailsRequest.bnmshipmentNumber
-	cartonDetails.dcShipmentNumber = createCartonDetailsRequest.dcShipmentNumber
-	cartonDetails.mwayBillNumber = createCartonDetailsRequest.mwayBillNumber
-	cartonDetails.dcWayBillNumber = createCartonDetailsRequest.dcWayBillNumber
-	cartonDetails.ewWayBillNumber = createCartonDetailsRequest.ewWayBillNumber
-	cartonDetails.dimensions = createCartonDetailsRequest.dimensions
-	cartonDetails.weight = createCartonDetailsRequest.weight
-	cartonDetails.mShipmentDate = createCartonDetailsRequest.mShipmentDate
-	cartonDetails.dcShipmentDate = createCartonDetailsRequest.dcShipmentDate
-	cartonDetails.mWayBillDate = createCartonDetailsRequest.mWayBillDate
-	cartonDetails.dcWayBillDate = createCartonDetailsRequest.dcWayBillDate
-	cartonDetails.ewWayBillDate = createCartonDetailsRequest.ewWayBillDate
+	cartonDetails.CartonSerialNo = createCartonDetailsRequest.CartonSerialNo
+	cartonDetails.CartonModel = createCartonDetailsRequest.CartonModel
+	cartonDetails.CartonStatus = createCartonDetailsRequest.CartonStatus
+	cartonDetails.CartonCreationDate = createCartonDetailsRequest.CartonCreationDate
+	cartonDetails.PalletSerialNumber = createCartonDetailsRequest.PalletSerialNumber
+	cartonDetails.AssetsSerialNumber = createCartonDetailsRequest.AssetsSerialNumber
+	cartonDetails.BnmshipmentNumber = createCartonDetailsRequest.BnmshipmentNumber
+	cartonDetails.DcShipmentNumber = createCartonDetailsRequest.DcShipmentNumber
+	cartonDetails.MwayBillNumber = createCartonDetailsRequest.MwayBillNumber
+	cartonDetails.DcWayBillNumber = createCartonDetailsRequest.DcWayBillNumber
+	cartonDetails.EwWayBillNumber = createCartonDetailsRequest.EwWayBillNumber
+	cartonDetails.Dimensions = createCartonDetailsRequest.Dimensions
+	cartonDetails.Weight = createCartonDetailsRequest.Weight
+	cartonDetails.MShipmentDate = createCartonDetailsRequest.MShipmentDate
+	cartonDetails.DcShipmentDate = createCartonDetailsRequest.DcShipmentDate
+	cartonDetails.MWayBillDate = createCartonDetailsRequest.MWayBillDate
+	cartonDetails.DcWayBillDate = createCartonDetailsRequest.DcWayBillDate
+	cartonDetails.EwWayBillDate = createCartonDetailsRequest.EwWayBillDate
 	dataToStore, _ := json.Marshal(cartonDetails)
 
-	err := stub.PutState(cartonDetails.cartonSerialNo, []byte(dataToStore))
+	err := stub.PutState(cartonDetails.CartonSerialNo, []byte(dataToStore))
 	if err != nil {
 		fmt.Println("Could not save Carton Details to ledger", err)
 		return nil, err
@@ -864,7 +864,7 @@ func processCartonDetails(stub shim.ChaincodeStubInterface, createCartonDetailsR
 
 	resp := CreatePalletDetailsResponse{}
 	resp.Err = "000"
-	resp.Message = cartonDetails.cartonSerialNo
+	resp.Message = cartonDetails.CartonSerialNo
 
 	respString, _ := json.Marshal(resp)
 
@@ -891,26 +891,26 @@ func parsePalletRequest(jsondata string) CreatePalletDetailsRequest {
 }
 func processPalletDetails(stub shim.ChaincodeStubInterface, createPalletDetailsRequest CreatePalletDetailsRequest) ([]byte, error) {
 	palletDetails := PalletDetails{}
-	palletDetails.palletSerialNo = createPalletDetailsRequest.palletSerialNo
-	palletDetails.palletModel = createPalletDetailsRequest.palletModel
-	palletDetails.palletStatus = createPalletDetailsRequest.palletStatus
-	palletDetails.palletCreationDate = createPalletDetailsRequest.palletCreationDate
-	palletDetails.assetsSerialNumber = createPalletDetailsRequest.assetsSerialNumber
-	palletDetails.mshipmentNumber = createPalletDetailsRequest.mshipmentNumber
-	palletDetails.dcShipmentNumber = createPalletDetailsRequest.dcShipmentNumber
-	palletDetails.mwayBillNumber = createPalletDetailsRequest.mwayBillNumber
-	palletDetails.dcWayBillNumber = createPalletDetailsRequest.dcWayBillNumber
-	palletDetails.ewWayBillNumber = createPalletDetailsRequest.ewWayBillNumber
-	palletDetails.dimensions = createPalletDetailsRequest.dimensions
-	palletDetails.weight = createPalletDetailsRequest.weight
-	palletDetails.mShipmentDate = createPalletDetailsRequest.mShipmentDate
-	palletDetails.dcShipmentDate = createPalletDetailsRequest.dcShipmentDate
-	palletDetails.mWayBillDate = createPalletDetailsRequest.mWayBillDate
-	palletDetails.dcWayBillDate = createPalletDetailsRequest.dcWayBillDate
-	palletDetails.ewWayBillDate = createPalletDetailsRequest.ewWayBillDate
+	palletDetails.PalletSerialNo = createPalletDetailsRequest.PalletSerialNo
+	palletDetails.PalletModel = createPalletDetailsRequest.PalletModel
+	palletDetails.PalletStatus = createPalletDetailsRequest.PalletStatus
+	palletDetails.PalletCreationDate = createPalletDetailsRequest.PalletCreationDate
+	palletDetails.AssetsSerialNumber = createPalletDetailsRequest.AssetsSerialNumber
+	palletDetails.MshipmentNumber = createPalletDetailsRequest.MshipmentNumber
+	palletDetails.DcShipmentNumber = createPalletDetailsRequest.DcShipmentNumber
+	palletDetails.MwayBillNumber = createPalletDetailsRequest.MwayBillNumber
+	palletDetails.DcWayBillNumber = createPalletDetailsRequest.DcWayBillNumber
+	palletDetails.EwWayBillNumber = createPalletDetailsRequest.EwWayBillNumber
+	palletDetails.Dimensions = createPalletDetailsRequest.Dimensions
+	palletDetails.Weight = createPalletDetailsRequest.Weight
+	palletDetails.MShipmentDate = createPalletDetailsRequest.MShipmentDate
+	palletDetails.DcShipmentDate = createPalletDetailsRequest.DcShipmentDate
+	palletDetails.MWayBillDate = createPalletDetailsRequest.MWayBillDate
+	palletDetails.DcWayBillDate = createPalletDetailsRequest.DcWayBillDate
+	palletDetails.EwWayBillDate = createPalletDetailsRequest.EwWayBillDate
 	dataToStore, _ := json.Marshal(palletDetails)
 
-	err := stub.PutState(palletDetails.palletSerialNo, []byte(dataToStore))
+	err := stub.PutState(palletDetails.PalletSerialNo, []byte(dataToStore))
 	if err != nil {
 		fmt.Println("Could not save Pallet Details to ledger", err)
 		return nil, err
@@ -918,7 +918,7 @@ func processPalletDetails(stub shim.ChaincodeStubInterface, createPalletDetailsR
 
 	resp := CreatePalletDetailsResponse{}
 	resp.Err = "000"
-	resp.Message = palletDetails.palletSerialNo
+	resp.Message = palletDetails.PalletSerialNo
 
 	respString, _ := json.Marshal(resp)
 
@@ -1047,7 +1047,7 @@ func UpdateAssetDetails(stub shim.ChaincodeStubInterface, args []string) ([]byte
 	wayBillNumber := args[1]
 	assetDetails, _ := fetchAssetDetails(stub, assetSerialNo)
 
-	assetDetails.ewWayBillNumber = wayBillNumber
+	assetDetails.EwWayBillNumber = wayBillNumber
 
 	fmt.Println("Updated Entity", assetDetails)
 	dataToStore, _ := json.Marshal(assetDetails)
@@ -1076,7 +1076,7 @@ func UpdateCartonDetails(stub shim.ChaincodeStubInterface, args []string) ([]byt
 	cartonSerialNo := args[0]
 	wayBillNumber := args[1]
 	cartonDetails, _ := fetchCartonDetails(stub, cartonSerialNo)
-	cartonDetails.mwayBillNumber = wayBillNumber
+	cartonDetails.MwayBillNumber = wayBillNumber
 	fmt.Println("Updated Entity", cartonDetails)
 	dataToStore, _ := json.Marshal(cartonDetails)
 	err := stub.PutState(cartonSerialNo, []byte(dataToStore))
@@ -1103,7 +1103,7 @@ func UpdatePalletDetails(stub shim.ChaincodeStubInterface, args []string) ([]byt
 	palletSerialNo := args[0]
 	wayBillNumber := args[1]
 	palletDetails, _ := fetchPalletDetails(stub, palletSerialNo)
-	palletDetails.mwayBillNumber = wayBillNumber
+	palletDetails.MwayBillNumber = wayBillNumber
 	fmt.Println("Updated Entity", palletDetails)
 	dataToStore, _ := json.Marshal(palletDetails)
 	err := stub.PutState(palletSerialNo, []byte(dataToStore))
