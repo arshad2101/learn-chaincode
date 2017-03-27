@@ -2080,6 +2080,12 @@ func (t *B4SCChaincode) Invoke(stub shim.ChaincodeStubInterface, function string
 		return CreateCarton(stub, args)
 	} else if function == "CreatePallet" {
 		return CreatePallet(stub, args)
+	} else if function == "UpdateAssetDetails" {
+		return UpdateAssetDetails(stub, args)
+	} else if function == "UpdateCartonDetails" {
+		return UpdateCartonDetails(stub, args)
+	} else if function == "UpdatePalletDetails" {
+		return UpdatePalletDetails(stub, args)
 	} else if function == "UpdateEntityWayBillMapping" {
 		return UpdateEntityWayBillMapping(stub, args)
 	} else {
