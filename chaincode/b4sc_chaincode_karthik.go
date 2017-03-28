@@ -2333,6 +2333,8 @@ func (t *B4SCChaincode) Query(stub shim.ChaincodeStubInterface, function string,
 		return GetPallet(stub, args)
 	} else if function == "GetCarton" {
 		return GetCarton(stub, args)
+	} else if function == "GetShipmentWayBill" {
+		return GetShipmentWayBill(stub, args)
 	}
 	return nil, errors.New("Invalid function name " + function)
 
