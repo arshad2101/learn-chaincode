@@ -25,6 +25,14 @@ var (
 	Error   *log.Logger
 )
 
+const (
+	SHIPMENT   = "SHIPMENT"
+	WAYBILL    = "WAYBILL"
+	DCSHIPMENT = "DCSHIPMENT"
+	DCWAYBILL  = "DCWAYBILL"
+	EWWAYBILL  = "EWWAYBILL"
+)
+
 type B4SCChaincode struct {
 }
 
@@ -171,6 +179,12 @@ type ShipmentPageLoadResponse struct {
 /************** Arshad Start Code This new struct for AssetDetails , CartonDetails , PalletDetails  is added by Arshad as to incorporate new LLD published orginal structure
 are not touched as of now to avoid break of any functionality devloped by Kartik 20/3/2017***************/
 
+type BlockchainResponse struct {
+	Err     string `json:"err"`
+	ErrMsg  string `json:"errMsg"`
+	Message string `json:"message"`
+}
+
 type AssetDetails struct {
 	AssetSerialNo      string
 	AssetModel         string
@@ -196,6 +210,8 @@ type AssetDetails struct {
 	DcWayBillDate      string
 	EwWayBillDate      string
 }
+
+/*
 type CreateAssetDetailsRequest struct {
 	AssetSerialNo      string
 	AssetModel         string
@@ -225,7 +241,7 @@ type CreateAssetDetailsResponse struct {
 	Err     string `json:"err"`
 	ErrMsg  string `json:"errMsg"`
 	Message string `json:"message"`
-}
+}*/
 type CartonDetails struct {
 	CartonSerialNo     string
 	CartonModel        string
@@ -246,6 +262,8 @@ type CartonDetails struct {
 	DcWayBillDate      string
 	EwWayBillDate      string
 }
+
+/*
 type CreateCartonDetailsRequest struct {
 	CartonSerialNo     string
 	CartonModel        string
@@ -270,7 +288,8 @@ type CreateCartonDetailsResponse struct {
 	Err     string `json:"err"`
 	ErrMsg  string `json:"errMsg"`
 	Message string `json:"message"`
-}
+}*/
+
 type PalletDetails struct {
 	PalletSerialNo     string
 	PalletModel        string
@@ -291,6 +310,8 @@ type PalletDetails struct {
 	DcWayBillDate      string
 	EwWayBillDate      string
 }
+
+/*
 type CreatePalletDetailsResponse struct {
 	Err     string `json:"err"`
 	ErrMsg  string `json:"errMsg"`
@@ -315,7 +336,7 @@ type CreatePalletDetailsRequest struct {
 	MWayBillDate       string
 	DcWayBillDate      string
 	EwWayBillDate      string
-}
+}*/
 
 /*This is common struct across Shipment and Waybill*/
 type ShipmentWayBill struct {
@@ -359,6 +380,8 @@ type ShipmentWayBill struct {
 	WayBillModifiedDate   string
 	WayBillModifiedBy     string
 }
+
+/*
 type CreateShipmentWayBillRequest struct {
 	WayBillNumber         string
 	ShipmentNumber        string
@@ -404,7 +427,7 @@ type CreateShipmentWayBillResponse struct {
 	Err     string `json:"err"`
 	ErrMsg  string `json:"errMsg"`
 	Message string `json:"message"`
-}
+}*/
 
 /*
 type WayBill struct {
@@ -495,9 +518,9 @@ type CreateWayBillResponse struct {
 	Message string `json:"message"`
 }*/
 type EWWayBill struct {
-	EwWayBillNumber       string
-	WayBillsNumber        []string
-	ShipmentsNumber       []string
+	EwWayBillNumber string
+	WayBillsNumber  []string
+	//ShipmentsNumber       []string
 	CountryFrom           string
 	CountryTo             string
 	Consigner             string
@@ -507,7 +530,7 @@ type EWWayBill struct {
 	CustodianTime         string
 	PersonConsigningGoods string
 	Comments              string
-	PalletsSerialNumber   []string
+	//PalletsSerialNumber   []string
 	AddressOfConsigner    string
 	AddressOfConsignee    string
 	ConsignerRegNumber    string
@@ -521,6 +544,8 @@ type EWWayBill struct {
 	EwWayBillModifiedDate string
 	EwWayBillModifiedBy   string
 }
+
+/*
 type CreateEWWayBillRequest struct {
 	EwWayBillNumber       string
 	WayBillsNumber        []string
@@ -552,7 +577,7 @@ type CreateEWWayBillResponse struct {
 	Err     string `json:"err"`
 	ErrMsg  string `json:"errMsg"`
 	Message string `json:"message"`
-}
+}*/
 type EntityWayBillMapping struct {
 	WayBillsNumber []string
 }
@@ -577,60 +602,128 @@ type EntityDetails struct {
 
 /************** Create Shipment Starts ***********************/
 func CreateShipment(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
-	fmt.Println("Entering Create WayBill", args[0])
-	return saveShipmentWayBill(stub, args[0])
+	fmt.Println("Entering Create Shipment", args[0])
+	shipmentRequest := parseShipmentWayBillRequest(args[0])
+	UpdatePalletCartonAssetByWayBill(stub, shipmentRequest, SHIPMENT, "")
+	return saveShipmentWayBill(stub, shipmentRequest)
 }
 
 /************** Create Shipment Ends ************************/
 
+/************** Create Way Bill Starts ***********************/
+func CreateWayBill(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	fmt.Println("Entering Create WayBill", args[0])
+
+	wayBillRequest := parseShipmentWayBillRequest(args[0])
+
+	shipmentDetails, err := fetchShipmentWayBillData(stub, wayBillRequest.ShipmentNumber)
+	if err != nil {
+		fmt.Println("Error while retrieveing the Pallet Details", err)
+		return nil, err
+	}
+	shipmentDetails.WayBillNumber = wayBillRequest.WayBillNumber
+	shipmentDetails.VehicleNumber = wayBillRequest.VehicleNumber
+	shipmentDetails.VehicleType = wayBillRequest.VehicleType
+	shipmentDetails.PickupDate = wayBillRequest.PickupDate
+	shipmentDetails.Custodian = wayBillRequest.Custodian
+	shipmentDetails.TpComments = wayBillRequest.TpComments
+	shipmentDetails.WayBillCreationDate = wayBillRequest.WayBillCreationDate
+	shipmentDetails.WayBillCreatedBy = wayBillRequest.WayBillCreatedBy
+
+	UpdatePalletCartonAssetByWayBill(stub, wayBillRequest, WAYBILL, "")
+	return saveShipmentWayBill(stub, shipmentDetails)
+}
+
+/************** Create Way Bill Ends ************************/
+
+/************** Create Shipment Starts ***********************/
+func CreateDCShipment(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	fmt.Println("Entering DC Create Shipment", args[0])
+	shipmentRequest := parseShipmentWayBillRequest(args[0])
+	UpdatePalletCartonAssetByWayBill(stub, shipmentRequest, DCSHIPMENT, "")
+	return saveShipmentWayBill(stub, shipmentRequest)
+}
+
+/************** Create Shipment Ends ************************/
+
+/************** Create Way Bill Starts ***********************/
+func CreateDCWayBill(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	fmt.Println("Entering Create WayBill", args[0])
+
+	dcwayBillRequest := parseShipmentWayBillRequest(args[0])
+
+	dcshipmentDetails, err := fetchShipmentWayBillData(stub, dcwayBillRequest.ShipmentNumber)
+
+	if err != nil {
+		fmt.Println("Error while retrieveing the Pallet Details", err)
+		return nil, err
+	}
+	dcshipmentDetails.WayBillNumber = dcwayBillRequest.WayBillNumber
+	dcshipmentDetails.VehicleNumber = dcwayBillRequest.VehicleNumber
+	dcshipmentDetails.VehicleType = dcwayBillRequest.VehicleType
+	dcshipmentDetails.PickupDate = dcwayBillRequest.PickupDate
+	dcshipmentDetails.Custodian = dcwayBillRequest.Custodian
+	dcshipmentDetails.TpComments = dcwayBillRequest.TpComments
+	dcshipmentDetails.WayBillCreationDate = dcwayBillRequest.WayBillCreationDate
+	dcshipmentDetails.WayBillCreatedBy = dcwayBillRequest.WayBillCreatedBy
+	dcshipmentDetails.VehicleType = dcwayBillRequest.VehicleType
+	dcshipmentDetails.EntityName = dcwayBillRequest.EntityName
+
+	UpdatePalletCartonAssetByWayBill(stub, dcwayBillRequest, DCWAYBILL, "")
+	return saveShipmentWayBill(stub, dcshipmentDetails)
+}
+
+/************** Create Way Bill Ends ************************/
+
 /************** Save Shipment WayBill Starts ************************/
-
-func saveShipmentWayBill(stub shim.ChaincodeStubInterface, jsondata string) ([]byte, error) {
-
-	res := CreateShipmentWayBillRequest{}
+func parseShipmentWayBillRequest(jsondata string) ShipmentWayBill {
+	res := ShipmentWayBill{}
 	json.Unmarshal([]byte(jsondata), &res)
 	fmt.Println(res)
+	return res
+}
+func saveShipmentWayBill(stub shim.ChaincodeStubInterface, createShipmentWayBillRequest ShipmentWayBill) ([]byte, error) {
 
 	shipmentWayBill := ShipmentWayBill{}
-	shipmentWayBill.WayBillNumber = res.WayBillNumber
-	shipmentWayBill.ShipmentNumber = res.ShipmentNumber
-	shipmentWayBill.CountryFrom = res.CountryFrom
-	shipmentWayBill.CountryTo = res.CountryTo
-	shipmentWayBill.Consigner = res.Consigner
-	shipmentWayBill.Consignee = res.Consignee
-	shipmentWayBill.Custodian = res.Custodian
-	shipmentWayBill.CustodianHistory = res.CustodianHistory
-	shipmentWayBill.PersonConsigningGoods = res.PersonConsigningGoods
-	shipmentWayBill.Comments = res.Comments
-	shipmentWayBill.TpComments = res.TpComments
-	shipmentWayBill.VehicleNumber = res.VehicleNumber
-	shipmentWayBill.VehicleType = res.VehicleType
-	shipmentWayBill.PickupDate = res.PickupDate
-	shipmentWayBill.PalletsSerialNumber = res.PalletsSerialNumber
-	shipmentWayBill.AddressOfConsigner = res.AddressOfConsigner
-	shipmentWayBill.AddressOfConsignee = res.AddressOfConsignee
-	shipmentWayBill.ConsignerRegNumber = res.ConsignerRegNumber
-	shipmentWayBill.Carrier = res.Carrier
-	shipmentWayBill.VesselType = res.VesselType
-	shipmentWayBill.VesselNumber = res.VesselNumber
-	shipmentWayBill.ContainerNumber = res.ContainerNumber
-	shipmentWayBill.ServiceType = res.ServiceType
-	shipmentWayBill.ShipmentModel = res.ShipmentModel
-	shipmentWayBill.PalletsQuantity = res.PalletsQuantity
-	shipmentWayBill.CartonsQuantity = res.CartonsQuantity
-	shipmentWayBill.AssetsQuantity = res.AssetsQuantity
-	shipmentWayBill.ShipmentValue = res.ShipmentValue
-	shipmentWayBill.EntityName = res.EntityName
-	shipmentWayBill.ShipmentCreationDate = res.ShipmentCreationDate
-	shipmentWayBill.EWWayBillNumber = res.EWWayBillNumber
-	shipmentWayBill.SupportiveDocuments = res.SupportiveDocuments
-	shipmentWayBill.ShipmentCreatedBy = res.ShipmentCreatedBy
-	shipmentWayBill.ShipmentModifiedDate = res.ShipmentModifiedDate
-	shipmentWayBill.ShipmentModifiedBy = res.ShipmentModifiedBy
-	shipmentWayBill.WayBillCreationDate = res.WayBillCreationDate
-	shipmentWayBill.WayBillCreatedBy = res.WayBillCreatedBy
-	shipmentWayBill.WayBillModifiedDate = res.WayBillModifiedDate
-	shipmentWayBill.WayBillModifiedBy = res.WayBillModifiedBy
+	shipmentWayBill.WayBillNumber = createShipmentWayBillRequest.WayBillNumber
+	shipmentWayBill.ShipmentNumber = createShipmentWayBillRequest.ShipmentNumber
+	shipmentWayBill.CountryFrom = createShipmentWayBillRequest.CountryFrom
+	shipmentWayBill.CountryTo = createShipmentWayBillRequest.CountryTo
+	shipmentWayBill.Consigner = createShipmentWayBillRequest.Consigner
+	shipmentWayBill.Consignee = createShipmentWayBillRequest.Consignee
+	shipmentWayBill.Custodian = createShipmentWayBillRequest.Custodian
+	shipmentWayBill.CustodianHistory = createShipmentWayBillRequest.CustodianHistory
+	shipmentWayBill.PersonConsigningGoods = createShipmentWayBillRequest.PersonConsigningGoods
+	shipmentWayBill.Comments = createShipmentWayBillRequest.Comments
+	shipmentWayBill.TpComments = createShipmentWayBillRequest.TpComments
+	shipmentWayBill.VehicleNumber = createShipmentWayBillRequest.VehicleNumber
+	shipmentWayBill.VehicleType = createShipmentWayBillRequest.VehicleType
+	shipmentWayBill.PickupDate = createShipmentWayBillRequest.PickupDate
+	shipmentWayBill.PalletsSerialNumber = createShipmentWayBillRequest.PalletsSerialNumber
+	shipmentWayBill.AddressOfConsigner = createShipmentWayBillRequest.AddressOfConsigner
+	shipmentWayBill.AddressOfConsignee = createShipmentWayBillRequest.AddressOfConsignee
+	shipmentWayBill.ConsignerRegNumber = createShipmentWayBillRequest.ConsignerRegNumber
+	shipmentWayBill.Carrier = createShipmentWayBillRequest.Carrier
+	shipmentWayBill.VesselType = createShipmentWayBillRequest.VesselType
+	shipmentWayBill.VesselNumber = createShipmentWayBillRequest.VesselNumber
+	shipmentWayBill.ContainerNumber = createShipmentWayBillRequest.ContainerNumber
+	shipmentWayBill.ServiceType = createShipmentWayBillRequest.ServiceType
+	shipmentWayBill.ShipmentModel = createShipmentWayBillRequest.ShipmentModel
+	shipmentWayBill.PalletsQuantity = createShipmentWayBillRequest.PalletsQuantity
+	shipmentWayBill.CartonsQuantity = createShipmentWayBillRequest.CartonsQuantity
+	shipmentWayBill.AssetsQuantity = createShipmentWayBillRequest.AssetsQuantity
+	shipmentWayBill.ShipmentValue = createShipmentWayBillRequest.ShipmentValue
+	shipmentWayBill.EntityName = createShipmentWayBillRequest.EntityName
+	shipmentWayBill.ShipmentCreationDate = createShipmentWayBillRequest.ShipmentCreationDate
+	shipmentWayBill.EWWayBillNumber = createShipmentWayBillRequest.EWWayBillNumber
+	shipmentWayBill.SupportiveDocuments = createShipmentWayBillRequest.SupportiveDocuments
+	shipmentWayBill.ShipmentCreatedBy = createShipmentWayBillRequest.ShipmentCreatedBy
+	shipmentWayBill.ShipmentModifiedDate = createShipmentWayBillRequest.ShipmentModifiedDate
+	shipmentWayBill.ShipmentModifiedBy = createShipmentWayBillRequest.ShipmentModifiedBy
+	shipmentWayBill.WayBillCreationDate = createShipmentWayBillRequest.WayBillCreationDate
+	shipmentWayBill.WayBillCreatedBy = createShipmentWayBillRequest.WayBillCreatedBy
+	shipmentWayBill.WayBillModifiedDate = createShipmentWayBillRequest.WayBillModifiedDate
+	shipmentWayBill.WayBillModifiedBy = createShipmentWayBillRequest.WayBillModifiedBy
 	dataToStore, _ := json.Marshal(shipmentWayBill)
 
 	err := stub.PutState(shipmentWayBill.ShipmentNumber, []byte(dataToStore))
@@ -639,7 +732,7 @@ func saveShipmentWayBill(stub shim.ChaincodeStubInterface, jsondata string) ([]b
 		return nil, err
 	}
 
-	resp := CreateShipmentWayBillResponse{}
+	resp := BlockchainResponse{}
 	resp.Err = "000"
 	resp.Message = shipmentWayBill.ShipmentNumber
 	respString, _ := json.Marshal(resp)
@@ -653,12 +746,12 @@ func saveShipmentWayBill(stub shim.ChaincodeStubInterface, jsondata string) ([]b
 
 /************** Get Shipment WayBill Starts ************************/
 
-func GetShipmentWayBill(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+func ViewShipmentWayBill(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	fmt.Println("Entering ViewWayBill " + args[0])
 
 	shipmentNo := args[0]
 
-	wayBilldata, dataerr := fetchWayBillData(stub, shipmentNo)
+	wayBilldata, dataerr := fetchShipmentWayBillData(stub, shipmentNo)
 	if dataerr == nil {
 
 		dataToStore, _ := json.Marshal(wayBilldata)
@@ -669,7 +762,7 @@ func GetShipmentWayBill(stub shim.ChaincodeStubInterface, args []string) ([]byte
 	return nil, dataerr
 
 }
-func fetchWayBillData(stub shim.ChaincodeStubInterface, shipmentNo string) (ShipmentWayBill, error) {
+func fetchShipmentWayBillData(stub shim.ChaincodeStubInterface, shipmentNo string) (ShipmentWayBill, error) {
 	var shipmentWayBill ShipmentWayBill
 
 	indexByte, err := stub.GetState(shipmentNo)
@@ -803,26 +896,26 @@ func fetchWayBillData(stub shim.ChaincodeStubInterface, wayBillNumber string) (W
 
 /************** View WayBill Ends ************************/
 
-/************** Create Export Warehouse WayBill Starts ************************
+/************** Create Export Warehouse WayBill Starts ************************/
 func CreateEWWayBill(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	fmt.Println("Entering Export Warehouse WayBill ")
 
 	ewWayBillRequest := parseEWWayBillRequest(args[0])
 
-	return processEWWayBill(stub, ewWayBillRequest)
+	return saveEWWayBill(stub, ewWayBillRequest)
 
 }
-func parseEWWayBillRequest(jsondata string) CreateEWWayBillRequest {
-	res := CreateEWWayBillRequest{}
+func parseEWWayBillRequest(jsondata string) EWWayBill {
+	res := EWWayBill{}
 	json.Unmarshal([]byte(jsondata), &res)
 	fmt.Println(res)
 	return res
 }
-func processEWWayBill(stub shim.ChaincodeStubInterface, createEWWayBillRequest CreateEWWayBillRequest) ([]byte, error) {
+func saveEWWayBill(stub shim.ChaincodeStubInterface, createEWWayBillRequest EWWayBill) ([]byte, error) {
 	ewWayBill := EWWayBill{}
 	ewWayBill.EwWayBillNumber = createEWWayBillRequest.EwWayBillNumber
 	ewWayBill.WayBillsNumber = createEWWayBillRequest.WayBillsNumber
-	ewWayBill.ShipmentsNumber = createEWWayBillRequest.ShipmentsNumber
+	//ewWayBill.ShipmentsNumber = createEWWayBillRequest.ShipmentsNumber
 	ewWayBill.CountryFrom = createEWWayBillRequest.CountryFrom
 	ewWayBill.CountryTo = createEWWayBillRequest.CountryTo
 	ewWayBill.Consigner = createEWWayBillRequest.Consigner
@@ -832,7 +925,7 @@ func processEWWayBill(stub shim.ChaincodeStubInterface, createEWWayBillRequest C
 	ewWayBill.CustodianTime = createEWWayBillRequest.CustodianTime
 	ewWayBill.PersonConsigningGoods = createEWWayBillRequest.PersonConsigningGoods
 	ewWayBill.Comments = createEWWayBillRequest.Comments
-	ewWayBill.PalletsSerialNumber = createEWWayBillRequest.PalletsSerialNumber
+	//ewWayBill.PalletsSerialNumber = createEWWayBillRequest.PalletsSerialNumber
 	ewWayBill.AddressOfConsigner = createEWWayBillRequest.AddressOfConsigner
 	ewWayBill.AddressOfConsignee = createEWWayBillRequest.AddressOfConsignee
 	ewWayBill.ConsignerRegNumber = createEWWayBillRequest.ConsignerRegNumber
@@ -854,7 +947,7 @@ func processEWWayBill(stub shim.ChaincodeStubInterface, createEWWayBillRequest C
 		return nil, err
 	}
 
-	resp := CreateEWWayBillResponse{}
+	resp := BlockchainResponse{}
 	resp.Err = "000"
 	resp.Message = ewWayBill.EwWayBillNumber
 
@@ -867,7 +960,7 @@ func processEWWayBill(stub shim.ChaincodeStubInterface, createEWWayBillRequest C
 
 /************** Create Export Warehouse WayBill Ends ************************/
 
-/************** View Export Warehouse WayBill Starts ************************
+/************** View Export Warehouse WayBill Starts ************************/
 func ViewEWWayBill(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	fmt.Println("Entering ViewEWWayBill " + args[0])
 
@@ -969,16 +1062,16 @@ func CreateAsset(stub shim.ChaincodeStubInterface, args []string) ([]byte, error
 
 	assetDetailsRequest := parseAssetRequest(args[0])
 
-	return processAssetDetails(stub, assetDetailsRequest)
+	return saveAssetDetails(stub, assetDetailsRequest)
 
 }
-func parseAssetRequest(jsondata string) CreateAssetDetailsRequest {
-	res := CreateAssetDetailsRequest{}
+func parseAssetRequest(jsondata string) AssetDetails {
+	res := AssetDetails{}
 	json.Unmarshal([]byte(jsondata), &res)
 	fmt.Println(res)
 	return res
 }
-func processAssetDetails(stub shim.ChaincodeStubInterface, createAssetDetailsRequest CreateAssetDetailsRequest) ([]byte, error) {
+func saveAssetDetails(stub shim.ChaincodeStubInterface, createAssetDetailsRequest AssetDetails) ([]byte, error) {
 	assetDetails := AssetDetails{}
 	assetDetails.AssetSerialNo = createAssetDetailsRequest.AssetSerialNo
 	assetDetails.AssetModel = createAssetDetailsRequest.AssetModel
@@ -1012,7 +1105,7 @@ func processAssetDetails(stub shim.ChaincodeStubInterface, createAssetDetailsReq
 		return nil, err
 	}
 
-	resp := CreateAssetDetailsResponse{}
+	resp := BlockchainResponse{}
 	resp.Err = "000"
 	resp.Message = assetDetails.AssetSerialNo
 
@@ -1031,16 +1124,16 @@ func CreateCarton(stub shim.ChaincodeStubInterface, args []string) ([]byte, erro
 
 	cartonDetailslRequest := parseCartonRequest(args[0])
 
-	return processCartonDetails(stub, cartonDetailslRequest)
+	return saveCartonDetails(stub, cartonDetailslRequest)
 
 }
-func parseCartonRequest(jsondata string) CreateCartonDetailsRequest {
-	res := CreateCartonDetailsRequest{}
+func parseCartonRequest(jsondata string) CartonDetails {
+	res := CartonDetails{}
 	json.Unmarshal([]byte(jsondata), &res)
 	fmt.Println(res)
 	return res
 }
-func processCartonDetails(stub shim.ChaincodeStubInterface, createCartonDetailsRequest CreateCartonDetailsRequest) ([]byte, error) {
+func saveCartonDetails(stub shim.ChaincodeStubInterface, createCartonDetailsRequest CartonDetails) ([]byte, error) {
 	cartonDetails := CartonDetails{}
 	cartonDetails.CartonSerialNo = createCartonDetailsRequest.CartonSerialNo
 	cartonDetails.CartonModel = createCartonDetailsRequest.CartonModel
@@ -1068,7 +1161,7 @@ func processCartonDetails(stub shim.ChaincodeStubInterface, createCartonDetailsR
 		return nil, err
 	}
 
-	resp := CreatePalletDetailsResponse{}
+	resp := BlockchainResponse{}
 	resp.Err = "000"
 	resp.Message = cartonDetails.CartonSerialNo
 
@@ -1086,16 +1179,16 @@ func CreatePallet(stub shim.ChaincodeStubInterface, args []string) ([]byte, erro
 
 	palletDetailslRequest := parsePalletRequest(args[0])
 
-	return processPalletDetails(stub, palletDetailslRequest)
+	return savePalletDetails(stub, palletDetailslRequest)
 
 }
-func parsePalletRequest(jsondata string) CreatePalletDetailsRequest {
-	res := CreatePalletDetailsRequest{}
+func parsePalletRequest(jsondata string) PalletDetails {
+	res := PalletDetails{}
 	json.Unmarshal([]byte(jsondata), &res)
 	fmt.Println(res)
 	return res
 }
-func processPalletDetails(stub shim.ChaincodeStubInterface, createPalletDetailsRequest CreatePalletDetailsRequest) ([]byte, error) {
+func savePalletDetails(stub shim.ChaincodeStubInterface, createPalletDetailsRequest PalletDetails) ([]byte, error) {
 	palletDetails := PalletDetails{}
 	palletDetails.PalletSerialNo = createPalletDetailsRequest.PalletSerialNo
 	palletDetails.PalletModel = createPalletDetailsRequest.PalletModel
@@ -1123,7 +1216,7 @@ func processPalletDetails(stub shim.ChaincodeStubInterface, createPalletDetailsR
 		return nil, err
 	}
 
-	resp := CreatePalletDetailsResponse{}
+	resp := BlockchainResponse{}
 	resp.Err = "000"
 	resp.Message = palletDetails.PalletSerialNo
 
@@ -1262,7 +1355,7 @@ func UpdateAssetDetails(stub shim.ChaincodeStubInterface, args []string) ([]byte
 		return nil, err
 	}
 
-	resp := CreateAssetDetailsResponse{}
+	resp := BlockchainResponse{}
 	resp.Err = "000"
 	resp.Message = assetSerialNo
 
@@ -1290,7 +1383,7 @@ func UpdateCartonDetails(stub shim.ChaincodeStubInterface, args []string) ([]byt
 		return nil, err
 	}
 
-	resp := CreateCartonDetailsResponse{}
+	resp := BlockchainResponse{}
 	resp.Err = "000"
 	resp.Message = cartonSerialNo
 
@@ -1317,7 +1410,7 @@ func UpdatePalletDetails(stub shim.ChaincodeStubInterface, args []string) ([]byt
 		return nil, err
 	}
 
-	resp := CreatePalletDetailsResponse{}
+	resp := BlockchainResponse{}
 	resp.Err = "000"
 	resp.Message = palletSerialNo
 
@@ -1326,6 +1419,88 @@ func UpdatePalletDetails(stub shim.ChaincodeStubInterface, args []string) ([]byt
 	fmt.Println("Successfully saved Pallet Details")
 	return []byte(respString), nil
 
+}
+
+/************** Update Pallet Details Ends ************************/
+
+/************** Update Pallet Details Starts ************************/
+func UpdatePalletCartonAssetByWayBill(stub shim.ChaincodeStubInterface, wayBillRequest ShipmentWayBill, source string, ewWaybillId string) ([]byte, error) {
+	fmt.Println("Entering Update Pallet Carton Asset Details")
+	// Start Loop for Pallet Nos
+	lenOfArray := len(wayBillRequest.PalletsSerialNumber)
+	for i := 0; i < lenOfArray; i++ {
+
+		palletData, err := fetchPalletDetails(stub, wayBillRequest.PalletsSerialNumber[i])
+
+		if err != nil {
+			fmt.Println("Error while retrieveing the Pallet Details", err)
+			return nil, err
+		}
+
+		if source == SHIPMENT {
+			palletData.MshipmentNumber = wayBillRequest.ShipmentNumber
+		} else if source == WAYBILL {
+			palletData.MwayBillNumber = wayBillRequest.WayBillNumber
+		} else if source == DCSHIPMENT {
+			palletData.DcShipmentNumber = wayBillRequest.ShipmentNumber
+		} else if source == DCWAYBILL {
+			palletData.DcWayBillNumber = wayBillRequest.WayBillNumber
+		}
+		savePalletDetails(stub, palletData)
+
+		//Start Loop for Carton Nos
+		lenOfArray = len(palletData.CartonSerialNumber)
+		for i := 0; i < lenOfArray; i++ {
+
+			cartonData, err := fetchCartonDetails(stub, palletData.CartonSerialNumber[i])
+
+			if err != nil {
+				fmt.Println("Error while retrieveing the Carton Details", err)
+				return nil, err
+			}
+			if source == SHIPMENT {
+				cartonData.MshipmentNumber = wayBillRequest.ShipmentNumber
+			} else if source == WAYBILL {
+				cartonData.MwayBillNumber = wayBillRequest.WayBillNumber
+			} else if source == DCSHIPMENT {
+				cartonData.DcShipmentNumber = wayBillRequest.ShipmentNumber
+			} else if source == DCWAYBILL {
+				cartonData.DcWayBillNumber = wayBillRequest.WayBillNumber
+			}
+			saveCartonDetails(stub, cartonData)
+		} //End Loop for Carton Nos
+
+		//Start Loop for Asset Nos
+		lenOfArray = len(palletData.AssetsSerialNumber)
+		for i := 0; i < lenOfArray; i++ {
+
+			assetData, err := fetchAssetDetails(stub, palletData.AssetsSerialNumber[i])
+
+			if err != nil {
+				fmt.Println("Error while retrieveing the Asset Details", err)
+				return nil, err
+			}
+			if source == SHIPMENT {
+				assetData.MshipmentNumber = wayBillRequest.ShipmentNumber
+			} else if source == WAYBILL {
+				assetData.MwayBillNumber = wayBillRequest.WayBillNumber
+			} else if source == DCSHIPMENT {
+				assetData.DcShipmentNumber = wayBillRequest.ShipmentNumber
+			} else if source == DCWAYBILL {
+				assetData.DcWayBillNumber = wayBillRequest.WayBillNumber
+			}
+			saveAssetDetails(stub, assetData)
+		} //End Loop for Asset Nos
+	}
+
+	resp := BlockchainResponse{}
+	resp.Err = "000"
+	resp.Message = ""
+
+	respString, _ := json.Marshal(resp)
+
+	fmt.Println("Successfully saved Pallet Carton Asset Details")
+	return []byte(respString), nil
 }
 
 /************** Update Pallet Details Ends ************************/
@@ -2275,10 +2450,16 @@ func (t *B4SCChaincode) Invoke(stub shim.ChaincodeStubInterface, function string
 		return CreateShipment(stub, args)
 	} else if function == "DumpData" {
 		return DumpData(stub, args)
+	} else if function == "CreateShipment" {
+		return CreateShipment(stub, args)
 	} else if function == "CreateWayBill" {
-		return nil, nil //CreateWayBill(stub, args)
+		return CreateWayBill(stub, args)
+	} else if function == "CreateDCShipment" {
+		return CreateDCShipment(stub, args)
+	} else if function == "CreateDCWayBill" {
+		return CreateDCWayBill(stub, args)
 	} else if function == "CreateEWWayBill" {
-		return nil, nil //CreateEWWayBill(stub, args)
+		return CreateEWWayBill(stub, args)
 	} else if function == "CreateEntityWayBillMapping" {
 		return nil, nil //CreateEntityWayBillMapping(stub, args)
 	} else if function == "CreateAsset" {
@@ -2295,8 +2476,6 @@ func (t *B4SCChaincode) Invoke(stub shim.ChaincodeStubInterface, function string
 		return UpdatePalletDetails(stub, args)
 	} else if function == "UpdateEntityWayBillMapping" {
 		return nil, nil //UpdateEntityWayBillMapping(stub, args)
-	} else if function == "CreateShipment" {
-		return CreateShipment(stub, args)
 	} else {
 		return nil, errors.New("Invalid function name " + function)
 	}
@@ -2333,8 +2512,8 @@ func (t *B4SCChaincode) Query(stub shim.ChaincodeStubInterface, function string,
 		return GetPallet(stub, args)
 	} else if function == "GetCarton" {
 		return GetCarton(stub, args)
-	} else if function == "GetShipmentWayBill" {
-		return GetShipmentWayBill(stub, args)
+	} else if function == "ViewShipmentWayBill" {
+		return ViewShipmentWayBill(stub, args)
 	}
 	return nil, errors.New("Invalid function name " + function)
 
