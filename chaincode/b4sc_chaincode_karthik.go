@@ -2322,9 +2322,9 @@ func (t *B4SCChaincode) Query(stub shim.ChaincodeStubInterface, function string,
 	} else if function == "ShipmentPageLoad" {
 		return ShipmentPageLoad(stub, args)
 	} else if function == "ViewEWWayBill" {
-		return ViewEWWayBill(stub, args)
+		return nil, nil //ViewEWWayBill(stub, args)
 	} else if function == "ViewEWWayBill" {
-		return ViewEWWayBill(stub, args)
+		return nil, nil //ViewEWWayBill(stub, args)
 	} else if function == "GetEntityWayBillMapping" {
 		return GetEntityWayBillMapping(stub, args)
 	} else if function == "GetAsset" {
