@@ -1730,7 +1730,7 @@ func parseShipmentPageLoadRequest(jsondata string) ShipmentPageLoadRequest {
 	return res
 }
 
-/************** ShipmentPageLoad Ends    ************************/
+/************** ShipmentPageLoad Ends ***************************/
 
 /************** Create Shipment Starts ************************/
 /**
