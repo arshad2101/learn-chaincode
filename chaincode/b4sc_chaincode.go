@@ -1,3 +1,6 @@
+/*****Main Chaicode to start the execution*****
+
+/*****************************************************/
 package main
 
 import (
@@ -915,6 +918,8 @@ func (t *B4SCChaincode) Invoke(stub shim.ChaincodeStubInterface, function string
 		return UpdateCartonDetails(stub, args)
 	} else if function == "UpdatePalletDetails" {
 		return UpdatePalletDetails(stub, args)
+	} else if function == "uploadComplianceDocument" {
+		return uploadComplianceDocument(stub, args)
 	} else {
 		return nil, errors.New("Invalid function name " + function)
 	}
@@ -947,6 +952,10 @@ func (t *B4SCChaincode) Query(stub shim.ChaincodeStubInterface, function string,
 		return GetCarton(stub, args)
 	} else if function == "ViewShipmentWayBill" {
 		return ViewShipmentWayBill(stub, args)
+	} else if function == "getComplianceDocumentByEntityName" {
+		return getComplianceDocumentByEntityName(stub, args)
+	} else if function == "getAllComplianceDocument" {
+		return getAllComplianceDocument(stub, args)
 	}
 	return nil, errors.New("Invalid function name " + function)
 

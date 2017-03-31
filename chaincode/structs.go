@@ -1,3 +1,18 @@
+/*****All structs used in the chaincode*****
+Structs Involved
+BlockchainResponse
+AssetDetails
+CartonDetails
+PalletDetails
+ShipmentWayBill
+EWWayBill
+EntityWayBillMapping
+CreateEntityWayBillMappingRequest
+WayBillShipmentMapping
+
+Author: Mohd Arshad
+Dated: 30/7/2017
+/*****************************************************/
 package main
 
 const (
@@ -163,4 +178,32 @@ type CreateEntityWayBillMappingRequest struct {
 type WayBillShipmentMapping struct {
 	DCWayBillsNumber string
 	DCShipmentNumber string
+}
+
+//storing compliance document mdetadata and hash
+type ComplianceDocument struct {
+	compliance_id      string
+	manufacturer       string
+	regulator          string
+	documentTitle      string
+	document_mime_type string
+	documentHash       string
+	documentType       string
+	createdBy          string
+	createdDate        string
+}
+
+//mapping for entity and corresponding document
+type EntityComplianceDocMapping struct {
+	complianceIds []string
+}
+
+//collection of all the compliance document ids
+type ComplianceIds struct {
+	complianceIds []string
+}
+
+//list of compliance document
+type ComplianceDocumentList struct {
+	complianceDocumentList []ComplianceDocument
 }

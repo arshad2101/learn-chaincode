@@ -1,3 +1,11 @@
+/*****Chaincode to perform Waybill realeted task*****
+Methods Involved
+CreateWayBill : Used for Creating Waybill
+
+Author: Mohd Arshad
+Dated: 30/7/2017
+/*****************************************************/
+
 package main
 
 import (
@@ -5,14 +13,6 @@ import (
 
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 )
-
-/*****Chaincode to perfor shipment realeted task*****
-Methods Involved
-CreateShipment : Used for Creating Shipment
-
-Author: Mohd Arshad
-Dated: 30/7/2017
-/*****************************************************/
 
 /************** Create Way Bill Starts ***********************/
 func CreateWayBill(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {

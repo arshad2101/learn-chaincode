@@ -1,3 +1,10 @@
+/*****Chaincode to perform Delivery Centre Shipment*****
+Methods Involved
+CreateDCShipment : Create Delivery Centre Shipment
+
+Author: Mohd Arshad
+Dated: 30/7/2017
+/*****************************************************/
 package main
 
 import (

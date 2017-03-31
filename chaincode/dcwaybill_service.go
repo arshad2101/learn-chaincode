@@ -1,3 +1,10 @@
+/*****Chaincode to perform Delivery Centre Way Bill*****
+Methods Involved
+CreateDCWayBill : Create Delivery Centre Way Bill
+
+Author: Mohd Arshad
+Dated: 30/7/2017
+/*****************************************************/
 package main
 
 import (

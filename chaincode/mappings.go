@@ -1,3 +1,11 @@
+/*****Chaincode to perform Mappings*****
+Methods Involved
+CreateEntityWayBillMapping : Mapping for Entity Name and Waybill
+UpdateEntityWayBillMapping: Update Mapping for Entity Name and Waybill
+
+Author: Mohd Arshad
+Dated: 30/7/2017
+/*****************************************************/
 package main
 
 import (

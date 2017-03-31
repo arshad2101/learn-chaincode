@@ -1,3 +1,11 @@
+/*****Chaincode to perform Export Warehouse Way Bill*****
+Methods Involved
+CreateEWWayBill : Create Export Warehouse Way Bill
+ViewEWWayBill: Fetch Export Warehouse Way Bill
+
+Author: Mohd Arshad
+Dated: 30/7/2017
+/*****************************************************/
 package main
 
 import (

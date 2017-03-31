@@ -1,3 +1,19 @@
+/*****Chaincode to perform Common Functionality*****
+Methods Involved
+CreateAsset
+CreateCarton
+CreatePallet
+GetAsset
+GetCarton
+GetPallet
+UpdateAssetDetails
+UpdateCartonDetails
+UpdatePalletDetails
+UpdatePalletCartonAssetByWayBill
+
+Author: Mohd Arshad
+Dated: 30/7/2017
+/*****************************************************/
 package main
 
 import (
@@ -375,7 +391,7 @@ func UpdatePalletDetails(stub shim.ChaincodeStubInterface, args []string) ([]byt
 
 /************** Update Pallet Details Ends ************************/
 
-/************** Update Pallet Details Starts ************************/
+/************** Update Pallet Carton Asset Details Starts ************************/
 func UpdatePalletCartonAssetByWayBill(stub shim.ChaincodeStubInterface, wayBillRequest ShipmentWayBill, source string, ewWaybillId string) ([]byte, error) {
 	fmt.Println("Entering Update Pallet Carton Asset Details")
 	// Start Loop for Pallet Nos
@@ -455,4 +471,4 @@ func UpdatePalletCartonAssetByWayBill(stub shim.ChaincodeStubInterface, wayBillR
 	return []byte(respString), nil
 }
 
-/************** Update Pallet Details Ends ************************/
+/************** Update Pallet Carton Asset Details  Ends ************************/

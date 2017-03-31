@@ -1,3 +1,11 @@
+/*****Chaincode to perform Shipment realeted task*****
+Methods Involved
+CreateShipment : Used for Creating Shipment
+ViewShipmentWayBill: Used to fetch Shipment details
+
+Author: Mohd Arshad
+Dated: 30/7/2017
+/*****************************************************/
 package main
 
 import (
