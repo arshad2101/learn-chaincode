@@ -29,7 +29,7 @@ func CreateEWWayBill(stub shim.ChaincodeStubInterface, args []string) ([]byte, e
 
 	ewWayBillRequest := parseEWWayBillRequest(args[0])
 	lenOfArray := len(ewWayBillRequest.WayBillsNumber)
-	for i := 0; i <= lenOfArray; i++ {
+	for i := 0; i < lenOfArray; i++ {
 		wayBillShipmentMapping, err := fetchWayBillShipmentMappingData(stub, ewWayBillRequest.WayBillsNumber[i])
 		dcShipmentNumber := wayBillShipmentMapping.DCShipmentNumber
 		dcShipmentData, _ := fetchShipmentWayBillData(stub, dcShipmentNumber)
