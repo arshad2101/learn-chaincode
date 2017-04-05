@@ -952,9 +952,7 @@ func (t *B4SCChaincode) Query(stub shim.ChaincodeStubInterface, function string,
 		return GetCarton(stub, args)
 	} else if function == "ViewShipmentWayBill" {
 		return ViewShipmentWayBill(stub, args)
-	} else if function == "getComplianceDocumentByEntityName" {
-		return getComplianceDocumentByEntityName(stub, args)
-	} else if function == "getAllComplianceDocument" {
+	}  else if function == "getAllComplianceDocument" {
 		return getAllComplianceDocument(stub, args)
 	}
 	return nil, errors.New("Invalid function name " + function)

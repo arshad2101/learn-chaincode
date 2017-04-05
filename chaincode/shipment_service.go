@@ -68,7 +68,7 @@ func saveShipmentWayBill(stub shim.ChaincodeStubInterface, createShipmentWayBill
 	shipmentWayBill.EntityName = createShipmentWayBillRequest.EntityName
 	shipmentWayBill.ShipmentCreationDate = createShipmentWayBillRequest.ShipmentCreationDate
 	shipmentWayBill.EWWayBillNumber = createShipmentWayBillRequest.EWWayBillNumber
-	shipmentWayBill.SupportiveDocuments = createShipmentWayBillRequest.SupportiveDocuments
+	shipmentWayBill.SupportiveDocumentsList = createShipmentWayBillRequest.SupportiveDocumentsList
 	shipmentWayBill.ShipmentCreatedBy = createShipmentWayBillRequest.ShipmentCreatedBy
 	shipmentWayBill.ShipmentModifiedDate = createShipmentWayBillRequest.ShipmentModifiedDate
 	shipmentWayBill.ShipmentModifiedBy = createShipmentWayBillRequest.ShipmentModifiedBy
