@@ -36,7 +36,7 @@ func CreateEWWayBill(stub shim.ChaincodeStubInterface, args []string) ([]byte, e
 		UpdatePalletCartonAssetByWayBill(stub, dcShipmentData, EWWAYBILL, ewWayBillRequest.EwWayBillNumber)
 		ewWayBillRequest.ShipmentsNumber = append(ewWayBillRequest.ShipmentsNumber, dcShipmentNumber)
 		lenOfArray = len(dcShipmentData.PalletsSerialNumber)
-		for j := 0; j <= lenOfArray; j++ {
+		for j := 0; j < lenOfArray; j++ {
 			ewWayBillRequest.PalletsSerialNumber = append(ewWayBillRequest.ShipmentsNumber, dcShipmentData.PalletsSerialNumber[j])
 		}
 		if err != nil {
