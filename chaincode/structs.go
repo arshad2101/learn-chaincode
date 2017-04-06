@@ -99,81 +99,75 @@ type PalletDetails struct {
 
 /*This is common struct across Shipment and Waybill*/
 type ShipmentWayBill struct {
-	WayBillNumber           string                `json:"wayBillNumber"`
-	ShipmentNumber          string                `json:"shipmentNumber"`
-	CountryFrom             string                `json:"countryFrom"`
-	CountryTo               string                `json:"countryTo"`
-	Consigner               string                `json:"consigner"`
-	Consignee               string                `json:"consignee"`
-	Custodian               string                `json:"custodian"`
-	CustodianHistory        []string              `json:"custodianHistory"`
-	PersonConsigningGoods   string                `json:"personConsigningGoods"`
-	Comments                string                `json:"comments"`
-	TpComments              string                `json:"tpComments"`
-	VehicleNumber           string                `json:"vehicleNumber"`
-	VehicleType             string                `json:"vehicleType"`
-	PickupDate              string                `json:"pickupDate"`
-	PalletsSerialNumber     []string              `json:"palletsSerialNumber"`
-	AddressOfConsigner      string                `json:"addressOfConsigner"`
-	AddressOfConsignee      string                `json:"addressOfConsignee"`
-	ConsignerRegNumber      string                `json:"consignerRegNumber"`
-	Carrier                 string                `json:"carrier"`
-	VesselType              string                `json:"vesselType"`
-	VesselNumber            string                `json:"vesselNumber"`
-	ContainerNumber         string                `json:"containerNumber"`
-	ServiceType             string                `json:"serviceType"`
-	ShipmentModel           string                `json:"shipmentModel"`
-	PalletsQuantity         string                `json:"palletsQuantity"`
-	CartonsQuantity         string                `json:"cartonsQuantity"`
-	AssetsQuantity          string                `json:"assetsQuantity"`
-	ShipmentValue           string                `json:"shipmentValue"`
-	EntityName              string                `json:"entityName"`
-	ShipmentCreationDate    string                `json:"shipmentCreationDate"`
-	EWWayBillNumber         string                `json:"eWWayBillNumber"`
-	SupportiveDocumentsList []SupportiveDocuments `json:"supportiveDocuments"`
-	ShipmentCreatedBy       string                `json:"shipmentCreatedBy"`
-	ShipmentModifiedDate    string                `json:"shipmentModifiedDate"`
-	ShipmentModifiedBy      string                `json:"shipmentModifiedBy"`
-	WayBillCreationDate     string                `json:"wayBillCreationDate"`
-	WayBillCreatedBy        string                `json:"wayBillCreatedBy"`
-	WayBillModifiedDate     string                `json:"wayBillModifiedDate"`
-	WayBillModifiedBy       string                `json:"wayBillModifiedBy"`
+	WayBillNumber         string   `json:"wayBillNumber"`
+	ShipmentNumber        string   `json:"shipmentNumber"`
+	CountryFrom           string   `json:"countryFrom"`
+	CountryTo             string   `json:"countryTo"`
+	Consigner             string   `json:"consigner"`
+	Consignee             string   `json:"consignee"`
+	Custodian             string   `json:"custodian"`
+	CustodianHistory      []string `json:"custodianHistory"`
+	PersonConsigningGoods string   `json:"personConsigningGoods"`
+	Comments              string   `json:"comments"`
+	TpComments            string   `json:"tpComments"`
+	VehicleNumber         string   `json:"vehicleNumber"`
+	VehicleType           string   `json:"vehicleType"`
+	PickupDate            string   `json:"pickupDate"`
+	PalletsSerialNumber   []string `json:"palletsSerialNumber"`
+	AddressOfConsigner    string   `json:"addressOfConsigner"`
+	AddressOfConsignee    string   `json:"addressOfConsignee"`
+	ConsignerRegNumber    string   `json:"consignerRegNumber"`
+	Carrier               string   `json:"carrier"`
+	VesselType            string   `json:"vesselType"`
+	VesselNumber          string   `json:"vesselNumber"`
+	ContainerNumber       string   `json:"containerNumber"`
+	ServiceType           string   `json:"serviceType"`
+	ShipmentModel         string   `json:"shipmentModel"`
+	PalletsQuantity       string   `json:"palletsQuantity"`
+	CartonsQuantity       string   `json:"cartonsQuantity"`
+	AssetsQuantity        string   `json:"assetsQuantity"`
+	ShipmentValue         string   `json:"shipmentValue"`
+	EntityName            string   `json:"entityName"`
+	ShipmentCreationDate  string   `json:"shipmentCreationDate"`
+	EWWayBillNumber       string   `json:"eWWayBillNumber"`
+	SupportiveDocuments   []string `json:"supportiveDocuments"`
+	ShipmentCreatedBy     string   `json:"shipmentCreatedBy"`
+	ShipmentModifiedDate  string   `json:"shipmentModifiedDate"`
+	ShipmentModifiedBy    string   `json:"shipmentModifiedBy"`
+	WayBillCreationDate   string   `json:"wayBillCreationDate"`
+	WayBillCreatedBy      string   `json:"wayBillCreatedBy"`
+	WayBillModifiedDate   string   `json:"wayBillModifiedDate"`
+	WayBillModifiedBy     string   `json:"wayBillModifiedBy"`
 }
 
 type EWWayBill struct {
-	EwWayBillNumber         string
-	WayBillsNumber          []string
-	ShipmentsNumber         []string
-	CountryFrom             string
-	CountryTo               string
-	Consigner               string
-	Consignee               string
-	Custodian               string
-	CustodianHistory        []string
-	CustodianTime           string
-	PersonConsigningGoods   string
-	Comments                string
-	PalletsSerialNumber     []string
-	AddressOfConsigner      string
-	AddressOfConsignee      string
-	ConsignerRegNumber      string
-	VesselType              string
-	VesselNumber            string
-	ContainerNumber         string
-	ServiceType             string
-	SupportiveDocumentsList []SupportiveDocuments
-	EwWayBillCreationDate   string
-	EwWayBillCreatedBy      string
-	EwWayBillModifiedDate   string
-	EwWayBillModifiedBy     string
+	EwWayBillNumber       string
+	WayBillsNumber        []string
+	ShipmentsNumber       []string
+	CountryFrom           string
+	CountryTo             string
+	Consigner             string
+	Consignee             string
+	Custodian             string
+	CustodianHistory      []string
+	CustodianTime         string
+	PersonConsigningGoods string
+	Comments              string
+	PalletsSerialNumber   []string
+	AddressOfConsigner    string
+	AddressOfConsignee    string
+	ConsignerRegNumber    string
+	VesselType            string
+	VesselNumber          string
+	ContainerNumber       string
+	ServiceType           string
+	SupportiveDocuments   []string
+	EwWayBillCreationDate string
+	EwWayBillCreatedBy    string
+	EwWayBillModifiedDate string
+	EwWayBillModifiedBy   string
 }
 
-type SupportiveDocuments struct {
-	DocumentID    string
-	DocumentType  string
-	DocumentHash  string
-	DocumentTitle string
-}
 type EntityWayBillMapping struct {
 	WayBillsNumber []string
 }
