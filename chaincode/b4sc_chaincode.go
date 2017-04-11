@@ -22,7 +22,7 @@ func NonDeterministic(stub shim.ChaincodeStubInterface) ([]byte, error) {
 	return nil, nil
 }
 
-func GetNonDeterministic(stub shim.ChaincodeStubInterface, string id) ([]byte, error) {
+func GetNonDeterministic(stub shim.ChaincodeStubInterface, id string) ([]byte, error) {
 	output, _ := stub.GetState(id)
 	return output, nil
 }
