@@ -35,8 +35,8 @@ func (t *B4SCChaincode) Invoke(stub shim.ChaincodeStubInterface, function string
 	/*if function == "Init" {
 		return Init(stub, function, args)
 	}else*/
-	if function == "GetNonDeterministic" {
-		return GetNonDeterministic(stub)
+	if function == "NonDeterministic" {
+		return NonDeterministic(stub)
 	} else {
 		return nil, errors.New("Invalid function name " + function)
 	}
