@@ -1,7 +1,7 @@
 /*****Main Chaicode to start the execution*****
 
 /*****************************************************/
-package main
+package shim
 
 import (
 	"errors"
@@ -22,6 +22,7 @@ func NonDeterministic(stub shim.ChaincodeStubInterface, key string, value string
 
 func GetNonDeterministic(stub shim.ChaincodeStubInterface, key string) ([]byte, error) {
 	output, _ := stub.GetState(key)
+	resultsIterator, err := stub.GetHistoryForKey(key)
 	return output, nil
 }
 
