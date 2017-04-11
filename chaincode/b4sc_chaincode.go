@@ -22,8 +22,8 @@ func NonDeterministic(stub shim.ChaincodeStubInterface) ([]byte, error) {
 	return nil, nil
 }
 
-func GetNonDeterministic(stub shim.ChaincodeStubInterface) ([]byte, error) {
-	output, _ := stub.GetState("1")
+func GetNonDeterministic(stub shim.ChaincodeStubInterface, string id) ([]byte, error) {
+	output, _ := stub.GetState(id)
 	return output, nil
 }
 
@@ -49,7 +49,7 @@ func (t *B4SCChaincode) Invoke(stub shim.ChaincodeStubInterface, function string
 func (t *B4SCChaincode) Query(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 
 	if function == "GetNonDeterministic" {
-		return GetNonDeterministic(stub)
+		return GetNonDeterministic(stub, args[0])
 	}
 	return nil, errors.New("Invalid function name " + function)
 
