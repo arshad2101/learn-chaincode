@@ -15,9 +15,9 @@ type B4SCChaincode struct {
 
 func NonDeterministic(stub shim.ChaincodeStubInterface) ([]byte, error) {
 
-	stub.PutState("1", []byte("Arshad"))
-	stub.PutState("2", []byte("Yasmeen"))
-	stub.PutState("3", []byte("Iram"))
+	stub.PutState("1", []byte("ArshadUpdated"))
+	stub.PutState("2", []byte("YasmeenUpdated"))
+	stub.PutState("3", []byte("IramUpdated"))
 
 	return nil, nil
 }
