@@ -13,17 +13,15 @@ import (
 type B4SCChaincode struct {
 }
 
-func NonDeterministic(stub shim.ChaincodeStubInterface) ([]byte, error) {
+func NonDeterministic(stub shim.ChaincodeStubInterface, key string, value string) ([]byte, error) {
 
-	stub.PutState("1", []byte("ArshadUpdated"))
-	stub.PutState("2", []byte("YasmeenUpdated"))
-	stub.PutState("3", []byte("IramUpdated"))
+	stub.PutState(key, []byte(value))
 
 	return nil, nil
 }
 
-func GetNonDeterministic(stub shim.ChaincodeStubInterface, id string) ([]byte, error) {
-	output, _ := stub.GetState(id)
+func GetNonDeterministic(stub shim.ChaincodeStubInterface, key string) ([]byte, error) {
+	output, _ := stub.GetState(key)
 	return output, nil
 }
 
@@ -39,7 +37,7 @@ func (t *B4SCChaincode) Invoke(stub shim.ChaincodeStubInterface, function string
 		return Init(stub, function, args)
 	}else*/
 	if function == "NonDeterministic" {
-		return NonDeterministic(stub)
+		return NonDeterministic(stub, args[0], args[1])
 	} else {
 		return nil, errors.New("Invalid function name " + function)
 	}
